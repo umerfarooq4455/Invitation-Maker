@@ -154,7 +154,7 @@ const Uploadfilemodal: React.FC<AddCategoryModalProps> = ({
               </div>
             ) : (
               <div className="flex flex-col">
-                <label className="inline-flex p-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#4623E9] to-[#EAABF0] text-center font-medium text-white hover:bg-opacity-90 cursor-pointer">
+                <label className="inline-flex p-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90 cursor-pointer">
                   Upload file
                   <input
                     type="file"
@@ -174,7 +174,7 @@ const Uploadfilemodal: React.FC<AddCategoryModalProps> = ({
               <button
                 onClick={handleFileUpload}
                 disabled={isLoading}
-                className="inline-flex px-3 py-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#4623E9] to-[#EAABF0] text-center font-medium text-white hover:bg-opacity-90"
+                className="inline-flex px-3 py-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90"
               >
                 Save File
               </button>

@@ -63,7 +63,7 @@ const Templatedlistmain: React.FC = () => {
 
       <div className=" py-5  sticky top-[85px] bg-[#F1F5F9] dark:bg-[#1A222C] border-none">
         <NavLink
-          className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-[#4623E9] to-[#EAABF0]  py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 "
+          className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896]  py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 "
           to="/templates"
         >
           Add Template
@@ -146,7 +146,7 @@ const Templatedlistmain: React.FC = () => {
           </div>
           {loading ? (
             <div className="flex mx-2 py-3 items-center  bg-white dark:bg-boxdark ">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#4623E9] border-t-transparent"></div>
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#E11D48] border-t-transparent"></div>
             </div>
           ) : error ? (
             <p className="mx-2 py-3 text-red-500 dark:text-red-500">{error}</p>
@@ -217,7 +217,7 @@ const Templatedlistmain: React.FC = () => {
                         />
                         {/* edit  list item button using there id */}
                         <button
-                          className="hover:text-[#4623E9] "
+                          className="hover:text-[#E11D48] "
                           onClick={() => DeleteCategory(catItem.templateID)}
                         >
                           <TbTrash className="text-[25px] text-[#000] dark:text-[#fff]" />

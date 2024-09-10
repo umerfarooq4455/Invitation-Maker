@@ -85,7 +85,7 @@ const CategoriesAdd: React.FC = () => {
         <button
           type="button"
           onClick={openModal}
-          className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-[#4623E9] to-[#EAABF0]  py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 "
+          className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896]  py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 "
         >
           Add Categories
         </button>
@@ -100,46 +100,45 @@ const CategoriesAdd: React.FC = () => {
             </div>
 
             <div className="flex">
-        
-                <form className="max-w-md mx-auto">
-                  <label
-                    htmlFor="default-search"
-                    className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                  >
-                    Search
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                      <svg
-                        className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                        />
-                      </svg>
-                    </div>
-                    <input
-                      type="search"
-                      id="default-search"
-                      className="block w-full p-3 ps-10 text-sm text-gray-900 h-[40px] md:w-[216px] dark:bg-meta-4  rounded-[10px] bg-[#F9FBFF]  dark:text-white "
-                      placeholder="Search"
-                      required
-                    />
+              <form className="max-w-md mx-auto">
+                <label
+                  htmlFor="default-search"
+                  className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                >
+                  Search
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg
+                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                      />
+                    </svg>
                   </div>
-                </form>
+                  <input
+                    type="search"
+                    id="default-search"
+                    className="block w-full p-3 ps-10 text-sm text-gray-900 h-[40px] md:w-[216px] dark:bg-meta-4  rounded-[10px] bg-[#F9FBFF]  dark:text-white"
+                    placeholder="Search"
+                    required
+                  />
+                </div>
+              </form>
             </div>
           </div>
           {loading ? (
             <div className="flex mx-2 py-3 items-center  bg-white dark:bg-boxdark ">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#4623E9] border-t-transparent"></div>
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#E11D48] border-t-transparent"></div>
             </div>
           ) : error ? (
             <p className="mx-2 py-3 text-red-500 dark:text-red-500">{error}</p>
@@ -204,7 +203,7 @@ const CategoriesAdd: React.FC = () => {
                         />
                         {/* edit  list item button using there id */}
                         <button
-                          className="hover:text-[#4623E9]"
+                          className="hover:text-[#E11D48]"
                           onClick={() => DeleteCategory(catItem.cat_id)}
                         >
                           <TbTrash className="text-[25px] text-[#000] dark:text-[#fff]" />
@@ -214,7 +213,7 @@ const CategoriesAdd: React.FC = () => {
                         {/* edit  list button  */}
 
                         <button
-                          className="hover:text-[#4623E9] mx-2"
+                          className="hover:text-[#E11D48] mx-2"
                           onClick={() => {
                             CategoryDeti(catItem.cat_id);
                             openModalEdit();

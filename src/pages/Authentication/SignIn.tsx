@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../../components/Sidebar/logo.jpeg';
+import logo from '../../components/Sidebar/logo.png';
 
 interface SignInProps {
   onSignIn: () => void;
@@ -27,11 +27,11 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
                   className="lg:text-[24px] justify-center   mb-5.5 text-[18px] text-[#000]  font-bold  flex items-center"
                 >
                   <img src={logo} className="w-10 rounded-lg mr-2 " />
-                  Collage Maker
+                  Invitation Maker
                 </Link>
 
                 <p className="2xl:px-20">
-                  The Collage Maker admin panel allows administrators to manage
+                  The Invitation Maker admin panel allows administrators to manage
                   user accounts, customize templates.
                 </p>
 
@@ -163,7 +163,7 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn }) => {
             <div className="w-full border-stroke xl:w-1/2 xl:border-l-2">
               <div className="w-full p-4 sm:p-12.5 xl:p-17.5 mt-[26px] lg:mt-0">
                 <h2 className="mb-9 text-2xl font-bold text-black  sm:text-title-xl2">
-                  Sign In to Collage Maker
+                  Sign In to Invitation Maker
                 </h2>
 
                 <form>

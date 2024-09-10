@@ -455,7 +455,7 @@ const Templatesmain: React.FC = () => {
             <div className="flex py-4">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-[#4623E9] to-[#EAABF0] py-2 px-6 text-center font-medium text-white hover:bg-opacity-90"
+                className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] py-2 px-6 text-center font-medium text-white hover:bg-opacity-90"
               >
                 Add Template
               </button>

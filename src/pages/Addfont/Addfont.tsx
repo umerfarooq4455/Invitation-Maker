@@ -68,7 +68,7 @@ const Addfont: React.FC = () => {
           <button
             type="button"
             onClick={openModal}
-            className="inline-flex p-2 mr-4 items-center justify-center rounded-full bg-gradient-to-r from-[#4623E9] to-[#EAABF0]  text-center font-medium text-white hover:bg-opacity-90 "
+            className="inline-flex p-2 mr-4 items-center justify-center rounded-full bg-gradient-to-r from-[#E11D48] to-[#ff7896]  text-center font-medium text-white hover:bg-opacity-90 "
           >
             <FaPlus />
           </button>
@@ -122,7 +122,7 @@ const Addfont: React.FC = () => {
         </div>
         {loading ? (
           <div className="flex mx-2 py-3 items-center">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#4623E9] border-t-transparent"></div>
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#E11D48] border-t-transparent"></div>
           </div>
         ) : error ? (
           <p className="mx-2 py-3 text-red-500 dark:text-red-500">{error}</p>
@@ -138,7 +138,7 @@ const Addfont: React.FC = () => {
                     {itmes.fontName}
                   </span>
                   <button
-                    className="hover:text-[#4623E9]"
+                    className="hover:text-[#E11D48]"
                     onClick={() => DeleteFont(itmes.fontId)}
                   >
                     <TbTrash className="text-[25px] text-[#000] dark:text-[#fff]" />

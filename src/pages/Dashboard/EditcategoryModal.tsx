@@ -203,7 +203,7 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
                   checked={isActive}
                   onChange={() => setIsActive(!isActive)}
                 />
-                <div className="relative w-11 h-6 bg-[#E2E8F0] rounded-full  dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full  after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-[#EAABF0]   after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#4623E9]"></div>
+                <div className="relative w-11 h-6 bg-[#E2E8F0] rounded-full  dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full  after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-[#ff7896]   after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#E11D48]"></div>
               </label>
             </div>
             <div className="ml-3">
@@ -217,7 +217,7 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
                   checked={isFeatured}
                   onChange={() => setIsFeatured(!isFeatured)}
                 />
-                <div className="relative w-11 h-6 bg-[#E2E8F0] rounded-full  dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full  after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-[#EAABF0]   after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#4623E9]"></div>
+                <div className="relative w-11 h-6 bg-[#E2E8F0] rounded-full  dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full  after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-[#ff7896]   after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#E11D48]"></div>
               </label>
             </div>
           </div>
@@ -310,7 +310,7 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
               <button
                 type="submit"
                 onClick={handleAddCategory}
-                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#4623E9] to-[#EAABF0] py-2 px-6 text-center font-medium text-white hover:bg-opacity-90"
+                className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#E11D48] to-[#ff7896] py-2 px-6 text-center font-medium text-white hover:bg-opacity-90"
               >
                 Add Category
               </button>

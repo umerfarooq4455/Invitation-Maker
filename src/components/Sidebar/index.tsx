@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import logo from './logo.jpeg';
+import logo from './logo.png';
 import { VscGitPullRequestCreate } from 'react-icons/vsc';
 import { FaRegFontAwesome } from 'react-icons/fa6';
 
@@ -59,7 +59,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-10 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+      className={`absolute left-0 top-0  flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
@@ -70,7 +70,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           className="lg:text-[24px] text-[18px] text-[#000] dark:text-white font-bold  flex items-center"
         >
           <img src={logo} className="w-10 rounded-lg mr-2 " />
-          Collage Maker
+          Invitation Maker
         </NavLink>
 
         <button
@@ -112,9 +112,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <NavLink
                   to="/"
                   className={({ isActive }) =>
-                    `group relative flex items-center gap-2.5 rounded-[10px] px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#4623E9] hover:to-[#EAABF0] dark:hover:bg-meta-4 ${
+                    `group relative flex items-center gap-2.5 rounded-[10px] px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#E11D48] hover:to-[#ff7896] dark:hover:bg-meta-4 ${
                       isActive
-                        ? 'text-white dark:text-white bg-gradient-to-r from-[#4623E9] to-[#EAABF0] dark:bg-meta-4'
+                        ? 'text-white dark:text-white bg-gradient-to-r from-[#E11D48] to-[#ff7896] dark:bg-meta-4'
                         : 'text-black dark:text-white hover:text-[#fff]'
                     }`
                   }
@@ -153,9 +153,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/templatedlist"
-                  className={`group relative flex items-center gap-2.5 rounded-[10px] px-4 py-2 font-medium   duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#4623E9]  hover:to-[#EAABF0] hover:text-[#fff] dark:hover:bg-meta-4 dark:text-[#fff] ' ${
+                  className={`group relative flex items-center gap-2.5 rounded-[10px] px-4 py-2 font-medium   duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#E11D48]  hover:to-[#ff7896] hover:text-[#fff] dark:hover:bg-meta-4 dark:text-[#fff] ' ${
                     pathname.includes('templatedlist') &&
-                    'text-[#fff] dark:text-[#fff] bg-gradient-to-r from-[#4623E9] to-[#EAABF0] dark:bg-meta-4'
+                    'text-[#fff] dark:text-[#fff] bg-gradient-to-r from-[#E11D48] to-[#ff7896] dark:bg-meta-4'
                   }`}
                 >
                   <svg
@@ -189,9 +189,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/templates"
-                  className={`group relative flex items-center gap-2.5 rounded-[10px] px-4 py-2 font-medium   duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#4623E9]  hover:to-[#EAABF0] hover:text-[#fff] dark:hover:bg-meta-4 dark:text-[#fff] ' ${
+                  className={`group relative flex items-center gap-2.5 rounded-[10px] px-4 py-2 font-medium   duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#E11D48]  hover:to-[#ff7896] hover:text-[#fff] dark:hover:bg-meta-4 dark:text-[#fff] ' ${
                     pathname.includes('templates') &&
-                    'text-[#fff] dark:text-[#fff] bg-gradient-to-r from-[#4623E9] to-[#EAABF0] dark:bg-meta-4'
+                    'text-[#fff] dark:text-[#fff] bg-gradient-to-r from-[#E11D48] to-[#ff7896] dark:bg-meta-4'
                   }`}
                 >
                   <VscGitPullRequestCreate width={18} height={19} />
@@ -201,9 +201,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/Addfont"
-                  className={`group relative flex items-center gap-2.5 rounded-[10px] px-4 py-2 font-medium   duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#4623E9]  hover:to-[#EAABF0] hover:text-[#fff] dark:hover:bg-meta-4 dark:text-[#fff] ' ${
+                  className={`group relative flex items-center gap-2.5 rounded-[10px] px-4 py-2 font-medium   duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#E11D48]  hover:to-[#ff7896] hover:text-[#fff] dark:hover:bg-meta-4 dark:text-[#fff] ' ${
                     pathname.includes('Addfont') &&
-                    'text-[#fff] dark:text-[#fff] bg-gradient-to-r from-[#4623E9] to-[#EAABF0] dark:bg-meta-4'
+                    'text-[#fff] dark:text-[#fff] bg-gradient-to-r from-[#E11D48] to-[#ff7896] dark:bg-meta-4'
                   }`}
                 >
                   <FaRegFontAwesome width={18} height={19} />

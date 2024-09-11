@@ -4,11 +4,15 @@ import EditcategoryModal from './EditcategoryModal';
 import { useMyContext } from '../../contextapi/MyProvider';
 import toast, { Toaster } from 'react-hot-toast';
 import { TbTrash } from 'react-icons/tb';
-import { FaRegEdit } from 'react-icons/fa';
 
 const CategoriesAdd: React.FC = () => {
-  const { instance, setDetailedCategory, setCategoryid, isDarkMode } =
-    useMyContext();
+  const {
+    instance,
+    setDetailedCategory,
+    setCategoryid,
+    isDarkMode,
+    shouldRefresh,
+  } = useMyContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalEdit, setIsModalEdit] = useState(false);
   const [categories, setCategories] = useState<any | null>([]);
@@ -33,7 +37,7 @@ const CategoriesAdd: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [shouldRefresh]);
 
   const fetchCategories = async () => {
     try {
@@ -51,7 +55,6 @@ const CategoriesAdd: React.FC = () => {
       const response = await instance.get(`/category_list/${id}`);
       setDetailedCategory(response?.data?.results[0]);
       setCategoryid(response.data.results[0].cat_id);
-      console.log(response.data.results[0].is_active, 'dasdfas');
     } catch (err) {
       setError('Failed to fetch categories');
     } finally {
@@ -62,7 +65,7 @@ const CategoriesAdd: React.FC = () => {
   const DeleteCategory = async (id: number) => {
     try {
       const response = await instance.delete(`/category/delete/${id}`);
-      console.log(response, 'dasdfas');
+      console.log(response);
       toast.success('Category Deleted Successfully');
       fetchCategories();
     } catch (err: any) {
@@ -100,39 +103,35 @@ const CategoriesAdd: React.FC = () => {
             </div>
 
             <div className="flex">
-              <form className="max-w-md mx-auto">
-                <label
-                  htmlFor="default-search"
-                  className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+              <form className="max-w-md mx-auto flex">
+                <input
+                  type="text"
+                  id="simple-search"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#E11D48] focus:border-[#ff7896] block w-full p-2.5  dark:bg-[#ff7896] dark:border-[#E11D48] dark:placeholder-gray-400 dark:text-white"
+                  placeholder="Search name..."
+                  required
+                />
+
+                <button
+                  type="submit"
+                  className="p-2.5 ms-2 text-sm font-medium text-white bg-[#E11D48] rounded-lg border border-[#ff7896] hover:bg-[#ff7896]  "
                 >
-                  Search
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                  </div>
-                  <input
-                    type="search"
-                    id="default-search"
-                    className="block w-full p-3 ps-10 text-sm text-gray-900 h-[40px] md:w-[216px] dark:bg-meta-4  rounded-[10px] bg-[#F9FBFF]  dark:text-white"
-                    placeholder="Search"
-                    required
-                  />
-                </div>
+                  <svg
+                    className="w-4 h-4"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    />
+                  </svg>
+                </button>
               </form>
             </div>
           </div>
@@ -148,6 +147,9 @@ const CategoriesAdd: React.FC = () => {
                 <tr className=" text-left  rounded-lg">
                   <th className="min-w-[71px] md:min-w-[10px] md:w-[10%]  py-4 px-4 font-bold text-[#B5B7C0] dark:text-[#B5B7C0]  rounded-l-lg">
                     Order No
+                  </th>
+                  <th className="md:w-[14%] py-4 px-4 font-bold text-[#B5B7C0] dark:text-[#B5B7C0]">
+                    Category Thumbnail
                   </th>
                   <th className="min-w-[126px] md:min-w-[10px] md:w-[14%] py-4 px-4 font-bold text-[#B5B7C0] dark:text-[#B5B7C0]">
                     Title
@@ -171,6 +173,12 @@ const CategoriesAdd: React.FC = () => {
                       <p className="font-semibold text-[#000000] text-[16px] dark:text-white">
                         {catItem.category_order}
                       </p>
+                    </td>
+                    <td className="  py-5 px-4  dark:border-strokedark ">
+                      <img
+                        className="rounded-full font-semibold h-[50px] w-[50px] text-[#000000] text-[16px]  dark:text-white"
+                        src={`https://collage-maker.trippleapps.com${catItem.categoryimageurl}`}
+                      />
                     </td>
                     <td className="  py-5 px-4  dark:border-strokedark ">
                       <h5 className=" font-semibold text-[#000000] text-[16px]  dark:text-white">

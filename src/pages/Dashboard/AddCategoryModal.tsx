@@ -30,7 +30,10 @@ interface AddCategoryModalProps {
   onClose: () => void;
   fetchCategoriess: any;
 }
-
+interface CustomFile extends File {
+  file_path: string;
+  file_name?: string; // Add other properties if necessary
+}
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   isOpen,
   onClose,
@@ -44,6 +47,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   const ordervalue = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
   const [isActive, setIsActive] = useState(false);
   const [isFeatured, setIsFeatured] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<CustomFile | null>(null);
 
   const toggleDropdown = () => setIsorder(!isorder);
   const handleOptionClick = (option: string) => {
@@ -115,13 +119,58 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
     setInputs(newInputs);
   };
 
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+
+      // Restrict file types to PNG, WebP, and JPEG
+      const allowedTypes = ['image/png', 'image/webp', 'image/jpeg'];
+      if (!allowedTypes.includes(file.type)) {
+        console.error(
+          'Invalid file type. Please upload a PNG, WebP, or JPEG file.'
+        );
+        return;
+      }
+
+      // Create a FormData object for file upload
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        // Upload the file to the server
+        const response = await fetch(
+          'https://collage-maker.trippleapps.com/file/upload/',
+          {
+            method: 'POST',
+            body: formData,
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data.results.file_path);
+
+          // const fileURL = data.results.file_path;
+          setSelectedFile(data.results);
+        } else {
+          console.error('File upload failed', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error uploading file', error);
+      }
+    }
+  };
+
   const handleAddCategory = async () => {
     if (inputs[0].title.trim() === '') {
       toast.error('The first English language field must be filled.');
       return;
     }
-    // Create the body object with static and dynamic fields
+
     const body = {
+      categoryimageurl: selectedFile?.file_path,
       category_order: selectedOption,
       is_featured: isFeatured ? 1 : 0,
       is_active: isActive ? 1 : 0,
@@ -132,8 +181,10 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
       }, {} as Record<string, string>),
     };
 
-    // Wrap the body object
-    const payload = { body };
+    // Create payload with base64 encoded file
+    const payload = {
+      body,
+    };
 
     try {
       const response = await instance.post('/category/addedit', payload);
@@ -210,7 +261,8 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
               </label>
             </div>
           </div>
-          <div className="w-full mt-3 mb-3 px-2">
+
+          <div className="w-full mt-3 px-2">
             <label className="block mb-2 text-sm font-bold text-black dark:text-white">
               Category Order
             </label>
@@ -258,6 +310,40 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
               )}
             </div>
           </div>
+
+          <div className="w-full mt-3 mb-3 px-2">
+            <label className="block mb-2 text-sm font-bold text-black dark:text-white">
+              Category Image Url
+            </label>
+            <div className="relative">
+              <div className="border-2  border-[#B8BAC7] border-dashed h-[111px] my-2 px-3 rounded-[10px] flex flex-col justify-center items-center">
+                {!selectedFile ? (
+                  <label className="inline-flex p-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90 cursor-pointer">
+                    Upload file
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                ) : (
+                  <span className="inline-flex p-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90 cursor-pointer">
+                    {selectedFile.file_name}
+                  </span>
+                )}
+                {!selectedFile ? (
+                  <span className="font-bold text-[#000] text-[13px] mt-2 dark:text-[#fff]">
+                    Maximum file size: 1500 KB
+                  </span>
+                ) : (
+                  <span className="font-bold text-[#000] text-[13px] mt-2 dark:text-[#fff]">
+                    Maximum file size: {(selectedFile.size / 1024).toFixed(2)}{' '}
+                    KB
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
           <div className="flex flex-col px-2">
             <div className="flex items-center justify-between">
               <h1 className="text-[14px] text-[#000] dark:text-white font-bold">
@@ -267,7 +353,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
                 Languages
               </h1>
             </div>
-            <div className="max-h-[494px] overflow-y-scroll">
+            <div className="max-h-[337px] overflow-y-scroll">
               {inputs.map((input, index) => (
                 <div key={index} className="mt-[10px] flex items-center mr-2">
                   <div className="w-4/5 flex flex-col">

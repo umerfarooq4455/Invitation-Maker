@@ -55,6 +55,10 @@ interface Validinput {
   id: number;
   name: boolean;
 }
+interface Validrefesh {
+  id: number;
+  type: boolean;
+}
 
 interface ContextType {
   state: State;
@@ -81,6 +85,9 @@ interface ContextType {
   setIsValid: React.Dispatch<React.SetStateAction<Validinput | boolean>>;
   isDarkMode: boolean;
   setIsDarkMode: (value: boolean) => void;
+  refreshCategories: () => void;
+  shouldRefresh: Validrefesh | false;
+  setShouldRefresh: React.Dispatch<React.SetStateAction<Validrefesh | false>>;
 }
 
 const MyContext = createContext<ContextType | undefined>(undefined);
@@ -171,13 +178,18 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       mask: '',
     },
   ]);
+  const [shouldRefresh, setShouldRefresh] = useState<Validrefesh | false>(false);
 
+  const refreshCategories = () => {
+    setShouldRefresh((prev) => (prev === false ? { id: 1, type: true } : false));
+  };
   const [isValid, setIsValid] = useState<Validinput | boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   return (
     <MyContext.Provider
       value={{
-        state,
+        state,shouldRefresh, setShouldRefresh,
+        refreshCategories,
         isDarkMode,
         setIsDarkMode,
         Categoryid,

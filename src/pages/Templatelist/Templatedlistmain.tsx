@@ -6,24 +6,11 @@ import EditcategoryModal from '../Dashboard/EditcategoryModal';
 import { NavLink } from 'react-router-dom';
 
 const Templatedlistmain: React.FC = () => {
-  const { instance, setDetailedCategory, setCategoryid } = useMyContext();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { instance } = useMyContext();
   const [isModalEdit, setIsModalEdit] = useState(false);
   const [categories, setCategories] = useState<any | null>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const openModalEdit = () => {
-    setIsModalEdit(true);
-  };
 
   const closeModalEdit = () => {
     setIsModalEdit(false);
@@ -81,67 +68,37 @@ const Templatedlistmain: React.FC = () => {
 
             <div className="flex">
               <div className="mr-2">
-                <form className="max-w-md mx-auto">
-                  <label
-                    htmlFor="default-search"
-                    className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                <form className="max-w-md mx-auto flex">
+                  <input
+                    type="text"
+                    id="simple-search"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#E11D48] focus:border-[#ff7896] block w-full p-2.5  dark:bg-[#ff7896] dark:border-[#E11D48] dark:placeholder-gray-400 dark:text-white"
+                    placeholder="Search name..."
+                    required
+                  />
+
+                  <button
+                    type="submit"
+                    className="p-2.5 ms-2 text-sm font-medium text-white bg-[#E11D48] rounded-lg border border-[#ff7896] hover:bg-[#ff7896]  "
                   >
-                    Search
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                      <svg
-                        className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                        />
-                      </svg>
-                    </div>
-                    <input
-                      type="search"
-                      id="default-search"
-                      className="block w-full p-3 ps-10 text-sm text-gray-900 h-[40px] md:w-[216px] dark:bg-meta-4  rounded-[10px] bg-[#F9FBFF]  dark:text-white "
-                      placeholder="Search"
-                      required
-                    />
-                  </div>
+                    <svg
+                      className="w-4 h-4"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                      />
+                    </svg>
+                  </button>
                 </form>
               </div>
-              {/* <div className="relative inline-block text-left">
-                <button className="inline-flex justify-center items-center w-full px-4 h-[38px]  py-2 text-sm  dark:bg-meta-4 bg-[#F9FBFF]  rounded-[10px]">
-                  <svg
-                    className="w-4 h-4 mr-2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M16 18L16 16M16 6L20 10.125M16 6L12 10.125M16 6L16 13"
-                      stroke="#808080"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M8 18L12 13.875M8 18L4 13.875M8 18L8 11M8 6V8"
-                      stroke="#808080"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Sort
-                </button>
-              </div> */}
             </div>
           </div>
           {loading ? (
@@ -196,14 +153,14 @@ const Templatedlistmain: React.FC = () => {
                   </td> */}
                     <td className="text-end py-5 px-4 dark:border-strokedark">
                       <p
-                        className={`font-semibold flex items-center text-end text-[16px] `}
+                        className={`font-semibold flex items-center text-start  text-[16px] `}
                       >
                         {catItem.templateBaseURL}
                       </p>
                     </td>
                     <td className="text-end py-5 px-4 dark:border-strokedark">
                       <p
-                        className={`font-semibold flex items-center text-end text-[16px]
+                        className={`font-semibold flex items-center text-center text-[16px]
                       `}
                       >
                         {catItem.status}

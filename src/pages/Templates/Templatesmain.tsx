@@ -3,6 +3,8 @@ import ImageItems from './ImageItems';
 import TextItems from './TextItems';
 import StickerItems from './StickerItems';
 import { useMyContext } from '../../contextapi/MyProvider';
+import { IoArrowBackCircle } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 // import axios from 'axios';
 
 const Templatesmain: React.FC = () => {
@@ -146,7 +148,13 @@ const Templatesmain: React.FC = () => {
 
   return (
     <>
-      <div className=" py-5  sticky top-[85px] bg-[#F1F5F9] dark:bg-[#1A222C] border-none">
+      <div className="flex items-center">
+        <Link to="/templatedlist">
+          <IoArrowBackCircle className="h-[54px] w-[57px] text-[#E11D48]" />{' '}
+        </Link>
+      </div>
+
+      <div className=" py-5 z-9 sticky top-[85px] bg-[#F1F5F9] dark:bg-[#1A222C] border-none">
         <span className=" md:text-[20px] px-2 py-4   font-semibold text-black dark:text-white">
           Create Templates
         </span>

@@ -63,7 +63,7 @@ const Addfont: React.FC = () => {
         onClose={closeModal}
         fontGetlists={fontGetlist}
       />
-      <div className="py-5 flex justify-between items-center  sticky top-[85px] bg-[#F1F5F9] dark:bg-[#1A222C] -z-20 lg:z-9 border-none">
+      <div className="py-5 flex justify-between items-center  sticky top-[75px] bg-[#F1F5F9] dark:bg-[#1A222C] -z-20 lg:z-9 border-none">
         <div className="flex justify-center items-center">
           <button
             type="button"

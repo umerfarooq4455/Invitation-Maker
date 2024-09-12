@@ -188,14 +188,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               <li>
                 <NavLink
-                  to="/templates"
+                  to="/stickerslist"
                   className={`group relative flex items-center gap-2.5 rounded-[10px] px-4 py-2 font-medium   duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#E11D48]  hover:to-[#ff7896] hover:text-[#fff] dark:hover:bg-meta-4 dark:text-[#fff] ' ${
-                    pathname.includes('templates') &&
+                    pathname.includes('stickerslist') &&
                     'text-[#fff] dark:text-[#fff] bg-gradient-to-r from-[#E11D48] to-[#ff7896] dark:bg-meta-4'
                   }`}
                 >
                   <VscGitPullRequestCreate width={18} height={19} />
-                  Create Templates
+                  Stickers List
                 </NavLink>
               </li>
               <li>

@@ -10,6 +10,7 @@ import { useMyContext } from './contextapi/MyProvider';
 import Templatesmain from './pages/Templates/Templatesmain';
 import Templatedlistmain from './pages/Templatelist/Templatedlistmain';
 import Addfont from './pages/Addfont/Addfont';
+import Stikerlist from './pages/Stikerlist/Stikerlist';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -45,12 +46,19 @@ function App() {
               <DefaultLayout>
                 <Routes>
                   <Route index element={<CategoriesAdd />} />
-                  <Route path="/templates" element={<Templatesmain />} />
-                  <Route
-                    path="/templatedlist"
-                    element={<Templatedlistmain />}
-                  />
+                  <Route>
+                    <Route
+                      index
+                      path="templatedlist"
+                      element={<Templatedlistmain />}
+                    />
+                    <Route
+                      path="templatedlist/createtemplate"
+                      element={<Templatesmain />}
+                    />
+                  </Route>
                   <Route path="/Addfont" element={<Addfont />} />
+                  <Route path="/stickerslist" element={<Stikerlist />} />
                 </Routes>
               </DefaultLayout>
             ) : (

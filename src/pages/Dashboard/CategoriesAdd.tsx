@@ -79,7 +79,7 @@ const CategoriesAdd: React.FC = () => {
     <>
       <Toaster position="top-center" reverseOrder={false} />
 
-      <div className="px-1 py-5   sticky top-[85px] bg-[#F1F5F9] dark:bg-[#1A222C]  border-none">
+      <div className="px-1 py-5 sticky top-[85px] bg-[#F1F5F9] dark:bg-[#1A222C]  border-none">
         <AddCategoryModal
           isOpen={isModalOpen}
           onClose={closeModal}

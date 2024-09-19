@@ -45,6 +45,7 @@ interface DetailedCategory {
   is_featured?: string;
   category_order?: string;
   [key: string]: any;
+  categoryimageurl? : any
 }
 interface Categorid {
   id: number;
@@ -75,9 +76,9 @@ interface ContextType {
   Imagesitem: ImageItem[];
   setImagesitem: React.Dispatch<React.SetStateAction<ImageItem[]>>;
   instance: Axios;
-  detailedCategory: DetailedCategory | null;
+  detailedCategory: DetailedCategory | any;
   setDetailedCategory: React.Dispatch<
-    React.SetStateAction<DetailedCategory | null>
+    React.SetStateAction<DetailedCategory | any>
   >;
   Categoryid: Categorid | null;
   setCategoryid: React.Dispatch<React.SetStateAction<Categorid | null>>;

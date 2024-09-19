@@ -57,7 +57,7 @@ const Templatedlistmain: React.FC = () => {
         </NavLink>
       </div>
 
-      <div className="rounded-[10px] bg-white px-2 pt-2 pb-2.5  shadow-md dark:border-strokedark dark:bg-boxdark  xl:pb-1">
+      <div className="bg-[#fff] mb-4 rounded-[10px] dark:bg-[#24303F] py-4 px-4">
         <div className="max-w-full overflow-x-auto">
           <div className="flex justify-between items-center flex-col md:flex-row">
             <div>

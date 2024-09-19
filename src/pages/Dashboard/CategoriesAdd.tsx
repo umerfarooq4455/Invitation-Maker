@@ -93,7 +93,7 @@ const CategoriesAdd: React.FC = () => {
           Add Categories
         </button>
       </div>
-      <div className="rounded-[10px] bg-white px-2 pt-2 pb-2.5  shadow-md dark:border-strokedark dark:bg-boxdark  xl:pb-1">
+      <div className="bg-[#fff] mb-4 rounded-[10px] dark:bg-[#24303F] py-4 px-4">
         <div className="max-w-full overflow-x-auto">
           <div className="flex justify-between items-center flex-col md:flex-row">
             <div>
@@ -177,7 +177,7 @@ const CategoriesAdd: React.FC = () => {
                     <td className="  py-5 px-4  dark:border-strokedark ">
                       <img
                         className="rounded-full font-semibold h-[50px] w-[50px] text-[#000000] text-[16px]  dark:text-white"
-                        src={`https://collage-maker.trippleapps.com${catItem.categoryimageurl}`}
+                        src={`https://collage-maker.trippleapps.com${catItem.thumbnailurl}`}
                       />
                     </td>
                     <td className="  py-5 px-4  dark:border-strokedark ">

@@ -48,7 +48,11 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
   const [isActive, setIsActive] = useState(false); // Change from string to boolean
   const [isFeatured, setIsFeatured] = useState(false);
   const [selectedFile, setSelectedFile] = useState<CustomFile | null>(null);
-  // Update state when detailedCategory changes
+  const [isthubmilcatergory, setIsthubmilcatergory] = useState(false);
+  const [selectedcatergoryoption, setSelectedcatergoryoption] = useState('');
+  const [selectedCategoryValue, setSelectedCategoryValue] = useState<
+    any | null
+  >(null);
 
   const toggleDropdown = () => setIsorder(!isorder);
   const handleOptionClick = (option: string) => {
@@ -57,6 +61,20 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
   };
 
   const ordervalue = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+
+  const catergoryvalue = [
+    { label: 'Invitation Templates', value: 0 },
+    { label: 'Greeting Cards', value: 1 },
+  ];
+
+  const toggleDropdown1 = () => setIsthubmilcatergory(!isthubmilcatergory);
+
+  const handleOptionClick1 = (option: { label: string; value: number }) => {
+    setSelectedcatergoryoption(option.label);
+    setSelectedCategoryValue(option.value);
+    setIsthubmilcatergory(false);
+  };
+
   const options = [
     { value: 'en', label: <img src={ukflag} width="24" alt="UK Flag" /> },
     { value: 'de', label: <img src={German} width="24" alt="German Flag" /> },
@@ -114,6 +132,7 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
       setIsActive(detailedCategory.is_active === '1');
       setIsFeatured(detailedCategory.is_featured === '1');
       setSelectedOption(detailedCategory.category_order || '');
+      setSelectedcatergoryoption(detailedCategory.thumbnilcategory);
       setInputs((prevInputs) =>
         prevInputs.map((input) => ({
           ...input,
@@ -164,8 +183,6 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
         if (response.ok) {
           const data = await response.json();
           console.log(data.results.file_path);
-
-          // const fileURL = data.results.file_path;
           setSelectedFile(data.results);
         } else {
           toast.error('File upload failed');
@@ -183,7 +200,9 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
     }
 
     const body = {
-      categoryimageurl: selectedFile?.file_path,
+      thumbnailurl: selectedFile?.file_path || detailedCategory.thumbnailurl,
+      thumbnilcategory:
+        selectedCategoryValue !== null ? selectedCategoryValue : 'None',
       category_order: selectedOption,
       is_featured: isFeatured ? 1 : 0,
       is_active: isActive ? 1 : 0,
@@ -324,6 +343,61 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
                 )}
               </div>
               {/* )} */}
+            </div>
+          </div>
+
+          <div className="w-full mt-3 px-2">
+            <label className="block mb-2 text-sm font-bold text-black dark:text-white">
+              Thumbnail Category
+            </label>
+            <div className="relative">
+              <div
+                className="w-full cursor-pointer resize-none rounded-[10px] border border-[#B8BAC7] bg-white p-2.5 text-[16px] font-normal text-[#1B254B] placeholder-gray-500 dark:border-meta-4 dark:bg-meta-4 dark:text-white dark:placeholder-white flex items-center justify-between"
+                onClick={toggleDropdown1}
+              >
+                <input
+                  className="w-full bg-transparent outline-none"
+                  type="text"
+                  placeholder="Select an option"
+                  value={
+                    selectedcatergoryoption === '1'
+                      ? 'Greeting Cards'
+                      : selectedcatergoryoption === '0'
+                      ? 'Invitation Templates'
+                      : selectedcatergoryoption
+                  }
+                  readOnly
+                />
+                <svg
+                  className={`w-4 h-4 transition-transform duration-200 transform-gpu ${
+                    isthubmilcatergory ? 'rotate-0' : 'rotate-90'
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </div>
+              {isthubmilcatergory && (
+                <ul className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg dark:bg-meta-4">
+                  {catergoryvalue.map((option) => (
+                    <li
+                      key={option.value}
+                      className="cursor-pointer px-4 py-2 text-[#1B254B] hover:bg-gray-200 hover:bg-gray dark:text-white dark:hover:bg-[#614cbb]"
+                      onClick={() => handleOptionClick1(option)}
+                    >
+                      {option.label}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
           <div className="w-full mt-3 mb-3 px-2">

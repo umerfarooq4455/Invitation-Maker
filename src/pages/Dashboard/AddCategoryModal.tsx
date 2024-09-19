@@ -32,7 +32,7 @@ interface AddCategoryModalProps {
 }
 interface CustomFile extends File {
   file_path: string;
-  file_name?: string; 
+  file_name?: string;
 }
 const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   isOpen,
@@ -48,11 +48,29 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   const [isActive, setIsActive] = useState(false);
   const [isFeatured, setIsFeatured] = useState(false);
   const [selectedFile, setSelectedFile] = useState<CustomFile | null>(null);
+  const [isthubmilcatergory, setIsthubmilcatergory] = useState(false);
+  const [selectedcatergoryoption, setSelectedcatergoryoption] = useState('');
+  const [selectedCategoryValue, setSelectedCategoryValue] = useState<
+    number | null
+  >(null);
+
+  const catergoryvalue = [
+    { label: 'Invitation Templates', value: 0 },
+    { label: 'Greeting Cards', value: 1 },
+  ];
 
   const toggleDropdown = () => setIsorder(!isorder);
   const handleOptionClick = (option: string) => {
     setSelectedOption(option);
     setIsorder(false);
+  };
+
+  const toggleDropdown1 = () => setIsthubmilcatergory(!isthubmilcatergory);
+
+  const handleOptionClick1 = (option: { label: string; value: number }) => {
+    setSelectedcatergoryoption(option.label);
+    setSelectedCategoryValue(option.value);
+    setIsthubmilcatergory(false);
   };
 
   useEffect(() => {
@@ -170,7 +188,9 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
     }
 
     const body = {
-      categoryimageurl: selectedFile?.file_path,
+      thumbnailurl: selectedFile?.file_path,
+      thumbnilcategory:
+        selectedCategoryValue !== null ? selectedCategoryValue : 'None',
       category_order: selectedOption,
       is_featured: isFeatured ? 1 : 0,
       is_active: isActive ? 1 : 0,
@@ -198,8 +218,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
-
-      <div className="fixed inset-0  overflow-auto bg-[#414444] bg-opacity-50 dark:bg-[#13151E] dark:bg-opacity-30 flex ">
+      <div className="fixed inset-0  z-50 overflow-auto bg-[#414444] bg-opacity-50 dark:bg-[#13151E] dark:bg-opacity-30 flex ">
         <div className="relative py-4 px-2 bg-white dark:bg-boxdark w-full max-w-md m-auto flex-col flex rounded-lg">
           <div className="flex justify-between px-2 mb-3">
             <div className="flex items-center">
@@ -309,6 +328,55 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
             </div>
           </div>
 
+          <div className="w-full mt-3 px-2">
+            <label className="block mb-2 text-sm font-bold text-black dark:text-white">
+              Thumbnail Category
+            </label>
+            <div className="relative">
+              <div
+                className="w-full cursor-pointer resize-none rounded-[10px] border border-[#B8BAC7] bg-white p-2.5 text-[16px] font-normal text-[#1B254B] placeholder-gray-500 dark:border-meta-4 dark:bg-meta-4 dark:text-white dark:placeholder-white flex items-center justify-between"
+                onClick={toggleDropdown1}
+              >
+                <input
+                  className="w-full bg-transparent outline-none"
+                  type="text"
+                  placeholder="Select an option"
+                  value={selectedcatergoryoption}
+                  readOnly
+                />
+                <svg
+                  className={`w-4 h-4 transition-transform duration-200 transform-gpu ${
+                    isthubmilcatergory ? 'rotate-0' : 'rotate-90'
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </div>
+              {isthubmilcatergory && (
+                <ul className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg dark:bg-meta-4">
+                  {catergoryvalue.map((option) => (
+                    <li
+                      key={option.value}
+                      className="cursor-pointer px-4 py-2 text-[#1B254B] hover:bg-gray-200 hover:bg-gray dark:text-white dark:hover:bg-[#614cbb]"
+                      onClick={() => handleOptionClick1(option)}
+                    >
+                      {option.label}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
           <div className="w-full mt-3 mb-3 px-2">
             <label className="block mb-2 text-sm font-bold text-black dark:text-white">
               Category Image Url
@@ -351,7 +419,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
                 Languages
               </h1>
             </div>
-            <div className="max-h-[337px] overflow-y-scroll">
+            <div className="max-h-[284px] overflow-y-scroll">
               {inputs.map((input, index) => (
                 <div key={index} className="mt-[10px] flex items-center mr-2">
                   <div className="w-4/5 flex flex-col">

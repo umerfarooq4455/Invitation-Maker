@@ -6,37 +6,33 @@ import { BsArrowDown } from 'react-icons/bs';
 interface AddCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  //   fontGetlists: any;
+  stickelist: any;
 }
 type Timeout = ReturnType<typeof setTimeout>;
 const StikeraddModal: React.FC<AddCategoryModalProps> = ({
   isOpen,
   onClose,
-  //   fontGetlists,
+  stickelist,
 }) => {
   const { instance } = useMyContext();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [fileUploadInitiated, setFileUploadInitiated] =
-    useState<boolean>(false);
   const [loadingTimeout, setLoadingTimeout] = useState<Timeout | null>(null);
   const [categories, setCategories] = useState<any | null>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedfileroption, setSelectedfileroption] = useState();
   const [isDropdownOpefilter, setIsDropdownOpefilter] = useState(false);
+  const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const toggleDropdownsort = () => {
     setIsDropdownOpefilter(!isDropdownOpefilter);
   };
 
-  const handleCheckboxFilter = (value: any) => {
-    setSelectedfileroption(value);
-    setIsDropdownOpefilter(false);
-  };
-
   useEffect(() => {
     fetchCategories();
+    stickelist();
   }, []);
 
   const fetchCategories = async () => {
@@ -44,13 +40,18 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
       const response = await instance.get('/category_list/');
       setCategories(response.data.results);
       setSelectedfileroption(response.data.results[0].en);
+      setSelectedCategory(response.data.results[0].cat_id);
     } catch (err) {
       setError('Failed to fetch categories');
     } finally {
       setLoading(false);
     }
   };
-
+  const handleCheckboxFilter = (category: any) => {
+    setSelectedfileroption(category.en); // Set the selected name
+    setSelectedCategory(category.cat_id); // Set the selected ID
+    setIsDropdownOpefilter(false);
+  };
   useEffect(() => {
     if (isLoading) {
       const timeout = setTimeout(() => {
@@ -65,22 +66,20 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const fileName = file.name.toLowerCase();
       const fileSize = file.size;
 
-      // Validate file type by extension
       const validExtensions = ['.webp', '.png', '.jpeg'];
       const fileExtension = fileName.slice(fileName.lastIndexOf('.'));
 
       if (!validExtensions.includes(fileExtension)) {
-        toast.error('Please select a .png or .webp , jpeg file');
+        toast.error('Please select a .png, .webp, or .jpeg file');
         return;
       }
 
-      // Validate file size
       const maxSizeInBytes = 1500 * 1024;
       if (fileSize > maxSizeInBytes) {
         toast.error('File size exceeds 1500KB');
@@ -88,46 +87,67 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
       }
 
       setSelectedFile(file);
-      setFileUploadInitiated(true);
       setIsLoading(true);
+
+      // Call the file upload API
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await instance.post('/file/upload/', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        if (response.status === 200) {
+          toast.success('File uploaded successfully');
+          setUploadedFileUrl(response.data.results.file_path);
+        } else {
+          toast.error('File upload failed');
+        }
+      } catch (error) {
+        toast.error('Error uploading file');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
-  const handleFileUpload = async () => {
-    if (!selectedFile) {
-      toast.error('Please select a file first');
+  const handleSaveSticker = async () => {
+    if (!uploadedFileUrl) {
+      toast.error('Please upload a file first');
       return;
     }
-    if (loadingTimeout) {
-      clearTimeout(loadingTimeout);
-      setIsLoading(false);
+    if (!selectedCategory) {
+      toast.error('Please select a category');
+      return;
     }
 
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-
     try {
-      const response = await instance.post('/font/crssseate/', formData, {
+      const payload = {
+        body: {
+          sticker_url: uploadedFileUrl,
+          sticker_category_id: selectedCategory,
+        },
+      };
+
+      const response = await instance.post('/sticker/create/', payload, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
 
       if (response.status === 200) {
-        toast.success('File uploaded successfully');
-        setTimeout(() => {
-          onClose();
-          //   fontGetlists();
-        }, 1000);
+        toast.success('Sticker saved successfully');
+        stickelist();
+        setSelectedFile(null);
+        onClose();
       } else {
-        toast.error('File upload failed');
+        toast.error('Failed to save sticker');
       }
     } catch (error) {
-      toast.error('Error uploading file');
-    } finally {
-      setIsLoading(false);
-      setFileUploadInitiated(false);
-      setSelectedFile(null);
+      toast.error('Error saving sticker');
     }
   };
 
@@ -207,8 +227,8 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
                       <input
                         type="radio"
                         className="form-checkbox h-5 w-5 rounded text-[#fff]"
-                        checked={selectedfileroption === catItem.en}
-                        onChange={() => handleCheckboxFilter(catItem.en)}
+                        checked={selectedCategory === catItem.cat_id} // Check against selectedCategory
+                        onChange={() => handleCheckboxFilter(catItem)} // Pass the entire category object
                       />
                       <span className="ml-2"> {catItem.en}</span>
                     </label>
@@ -232,39 +252,48 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
                   Uploading...
                 </span>
               </div>
-            ) : fileUploadInitiated ? (
-              <div className="flex flex-col justify-center items-center">
-                <span className="text-[#B8BAC7] border-[1px] border-dashed border-[#B8BAC7] rounded-[10px] p-2 dark:text-[#fff] text-[22px] font-bold">
-                  File selected
-                </span>
-              </div>
             ) : (
               <div className="flex flex-col">
-                <label className="inline-flex p-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90 cursor-pointer">
-                  Upload Sticker
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                </label>
-                <span className="font-bold text-[#000] text-[13px] mt-2 dark:text-[#fff]">
-                  Maximum file size: 1500kb
-                </span>
+                {!selectedFile ? (
+                  <>
+                    <label className="inline-flex p-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90 cursor-pointer">
+                      Upload Sticker
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                    </label>
+                    <span className="font-bold text-[#000] text-[13px] mt-2 dark:text-[#fff]">
+                      Maximum file size: 1500kb
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="font-bold text-[#000] text-[13px] dark:text-[#fff] mt-2">
+                      {selectedFile.name} selected
+                    </span>
+                    <label className="inline-flex p-2 items-center justify-center mt-2 rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90 cursor-pointer">
+                      Re-upload Sticker
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                    </label>
+                  </>
+                )}
               </div>
             )}
           </div>
 
           <div className="pt-5 mx-4">
-            {fileUploadInitiated && !isLoading ? (
-              <button
-                onClick={handleFileUpload}
-                disabled={isLoading}
-                className="inline-flex px-3 py-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90"
-              >
-                Save Sticker
-              </button>
-            ) : null}
+            <button
+              onClick={handleSaveSticker}
+              className="inline-flex px-3 py-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90"
+            >
+              Save Sticker
+            </button>
           </div>
         </div>
       </div>

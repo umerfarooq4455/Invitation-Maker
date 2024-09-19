@@ -160,7 +160,7 @@ const Templatesmain: React.FC = () => {
         </span>
       </div>
 
-      <div className="rounded-[10px] shadow-sm   bg-white px-2 pt-2 pb-2.5  mb-3  dark:border-strokedark dark:bg-boxdark  xl:pb-1">
+      <div className="bg-[#fff] mb-4 rounded-[10px] dark:bg-[#24303F] py-4 px-4">
         <div className="flex flex-col px-2">
           <form className="w-full " onSubmit={handleSubmit}>
             <div className="w-full py-4">

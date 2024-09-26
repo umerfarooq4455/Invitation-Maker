@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import { useMyContext } from '../../contextapi/MyProvider';
 
 interface Item {
@@ -8,19 +13,54 @@ interface Item {
   itemRightMargin: string;
   itemBottomMargin: string;
   rotated: string;
-  fontUrl: string;
+  fontId?: string;
+  fontName?: string;
+  fontUrl?: string;
   textColor: string;
   textSize: string;
   textAlignment: string;
   letterSpacing: string;
 }
 
-const TextItems: React.FC = () => {
+interface Font {
+  fontId: string | undefined;
+  fontName: string;
+  fontPath: string;
+}
+
+const TextItems = forwardRef((props, ref) => {
+  const { instance, textsitems, setTextsitems } = useMyContext();
+  const [fontlist, setFontlist] = useState<Font[]>([]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeItems, setActiveItems] = useState<number | null>(null);
-  const { textsitems, setTextsitems } = useMyContext();
 
-  console.log('Text Items', textsitems);
+  useImperativeHandle(ref, () => ({
+    validate: () => {
+      let isValid = true;
+      textsitems.forEach((item, index) => {
+        if (
+          !item.text ||
+          !item.itemLeftMargin ||
+          !item.itemTopMargin ||
+          !item.itemRightMargin ||
+          !item.itemBottomMargin ||
+          !item.rotated ||
+          !item.textColor ||
+          !item.textSize ||
+          !item.textAlignment ||
+          !item.letterSpacing
+        ) {
+          toggleAccordion(0);
+          toggleActiveItems(0);
+          document.getElementById(`itemWidth${index}`)?.focus();
+          isValid = false;
+          return;
+        }
+      });
+
+      return isValid;
+    },
+  }));
 
   const toggleAccordion = (index: number): void => {
     setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -41,61 +81,66 @@ const TextItems: React.FC = () => {
     setTextsitems(newItems);
   };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
+  useEffect(() => {
+    fontGetlist();
+  }, []);
 
-      try {
-        const response = await fetch(
-          'https://collage-maker.trippleapps.com/file/upload/',
-          {
-            method: 'POST',
-            body: formData,
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const fileUrl = data.results.file_path;
-
-          const newItems = [...textsitems];
-          newItems[index].fontUrl = fileUrl; // Assign the file URL to the name property
-          setTextsitems(newItems);
-        } else {
-          console.error('File upload failed with status:', response.status);
-        }
-      } catch (error) {
-        console.error('Error uploading file:', error);
-      }
+  const fontGetlist = async () => {
+    try {
+      const response = await instance.get<{ results: Font[] }>('/font/list');
+      const fonts = response.data.results.map((font) => ({
+        fontId: font.fontId,
+        fontName: font.fontName,
+        fontPath: font.fontPath,
+      }));
+      setFontlist(fonts);
+    } catch (err) {
+      console.error('Error fetching fonts:', err);
     }
   };
+
   const addItem = () => {
-    setTextsitems([
-      ...textsitems,
+    setTextsitems((prevItems) => [
+      ...prevItems,
       {
         text: '',
         itemLeftMargin: '',
         itemTopMargin: '',
         itemRightMargin: '',
         itemBottomMargin: '',
-        rotated: '',
-        fontUrl: '',
+        rotated: '0',
         textColor: '',
         textSize: '',
         textAlignment: '',
         letterSpacing: '',
+        fontId: 'defaultFontId', // Provide default or valid values
+        fontName: 'defaultFontName',
+        fontUrl: 'defaultFontUrl',
       },
     ]);
   };
 
   const deleteItem = (index: number) => {
-    const newItems = textsitems.filter((_, i) => i !== index);
-    setTextsitems(newItems);
+    setTextsitems((prevItems) => prevItems.filter((_, i) => i !== index));
+  };
+
+  // Handle change event for font selection
+  const handleFontChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+    index: number
+  ) => {
+    const selectedFontId = event.target.value;
+    const selectedFont = fontlist.find(
+      (font) => font.fontId === selectedFontId
+    );
+
+    if (selectedFont) {
+      const newItems = [...textsitems];
+      newItems[index].fontId = selectedFont.fontId;
+      newItems[index].fontName = selectedFont.fontName;
+      newItems[index].fontUrl = selectedFont.fontPath;
+      setTextsitems(newItems);
+    }
   };
 
   return (
@@ -177,6 +222,7 @@ const TextItems: React.FC = () => {
                             id={`text${index}`}
                             placeholder="Text"
                             value={item.text}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'text')
                             }
@@ -197,6 +243,7 @@ const TextItems: React.FC = () => {
                             id={`itemLeftMargin${index}`}
                             placeholder="Item Left Margin"
                             value={item.itemLeftMargin}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'itemLeftMargin')
                             }
@@ -217,6 +264,7 @@ const TextItems: React.FC = () => {
                             id={`itemTopMargin${index}`}
                             placeholder="Item Top Margin"
                             value={item.itemTopMargin}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'itemTopMargin')
                             }
@@ -239,6 +287,7 @@ const TextItems: React.FC = () => {
                             id={`itemRightMargin${index}`}
                             placeholder="Item Right Margin"
                             value={item.itemRightMargin}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'itemRightMargin')
                             }
@@ -259,6 +308,7 @@ const TextItems: React.FC = () => {
                             id={`itemBottomMargin${index}`}
                             placeholder="Item Bottom Margin"
                             value={item.itemBottomMargin}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'itemBottomMargin')
                             }
@@ -300,6 +350,7 @@ const TextItems: React.FC = () => {
                             type="text"
                             id={`textColor${index}`}
                             placeholder="Text Color"
+                            required
                             value={item.textColor}
                             onChange={(e) =>
                               handleInputChange(e, index, 'textColor')
@@ -320,6 +371,7 @@ const TextItems: React.FC = () => {
                             type="text"
                             id={`textSize${index}`}
                             placeholder="Text Size"
+                            required
                             value={item.textSize}
                             onChange={(e) =>
                               handleInputChange(e, index, 'textSize')
@@ -340,6 +392,7 @@ const TextItems: React.FC = () => {
                             type="text"
                             id={`textAlignment${index}`}
                             placeholder="Text Alignment"
+                            required
                             value={item.textAlignment}
                             onChange={(e) =>
                               handleInputChange(e, index, 'textAlignment')
@@ -372,19 +425,22 @@ const TextItems: React.FC = () => {
                       <div className="w-full sm:w-1/3 px-2">
                         <label
                           className="block mb-2 text-sm font-bold text-black dark:text-white"
-                          htmlFor={`name${index}`}
+                          htmlFor={`fontSelect${index}`}
                         >
-                          Upload Image
+                          Font
                         </label>
-                        <div className="relative mt-[8px] flex items-center">
-                          <input
-                            className="block mt-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                            type="file"
-                            required
-                            id={`fontUrl${index}`}
-                            onChange={(e) => handleFileChange(e, index)}
-                          />
-                        </div>
+                        <select
+                          className="block w-full resize-none rounded-[10px] border border-[#B8BAC7] bg-white px-3 py-2.5 text-[16px] font-normal text-[#1B254B] dark:border-meta-4 dark:bg-meta-4 dark:text-white"
+                          id={`fontSelect${index}`}
+                          onChange={(e) => handleFontChange(e, index)}
+                        >
+                          <option value="">Select Font</option>
+                          {fontlist.map((font) => (
+                            <option key={font.fontId} value={font.fontId}>
+                              {font.fontName}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                     <div className="w-full flex justify-end items-end mt-4">
@@ -413,6 +469,6 @@ const TextItems: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default TextItems;

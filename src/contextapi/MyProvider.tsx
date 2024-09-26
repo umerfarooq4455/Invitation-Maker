@@ -33,7 +33,9 @@ interface TextItem {
   itemRightMargin: string;
   itemBottomMargin: string;
   rotated: string;
-  fontUrl: string;
+  fontId?: string;
+  fontName?: string;
+  fontUrl?: string;
   textColor: string;
   textSize: string;
   textAlignment: string;

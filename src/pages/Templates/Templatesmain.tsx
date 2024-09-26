@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ImageItems from './ImageItems';
 import TextItems from './TextItems';
 import StickerItems from './StickerItems';
@@ -10,13 +10,21 @@ import { Link } from 'react-router-dom';
 const Templatesmain: React.FC = () => {
   const { instance, Imagesitem, stickersitems, textsitems } = useMyContext();
   const [categorieslist, setCategorieslist] = useState<any | null>([]);
+  const childRefs = {
+    textItems: useRef<{ validate: () => boolean }>(null),
+    imageItems: useRef<{ validate: () => boolean }>(null),
+    stickerItems: useRef<{ validate: () => boolean }>(null),
+  };
+  const [activeComponent, setActiveComponent] = useState<
+    'text' | 'image' | 'sticker'
+  >('text');
 
   const [formData, setFormData] = useState({
     catID: '',
     status: '',
-    templateOrder: '',
-    isPro: '',
-    isNew: '',
+    templateOrder: "",
+    isPro: false,
+    isNew: false,
     imagesCount: '',
     templateBaseURL: '',
     templateFrameURL: '',
@@ -28,6 +36,9 @@ const Templatesmain: React.FC = () => {
     templateHeight: '',
   });
 
+  const handleComponentChange = (component: 'text' | 'image' | 'sticker') => {
+    setActiveComponent(component);
+  };
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
     type: string
@@ -81,13 +92,25 @@ const Templatesmain: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const validations = {
+      text: childRefs.textItems.current?.validate(),
+      image: childRefs.imageItems.current?.validate(),
+      sticker: childRefs.stickerItems.current?.validate(),
+    };
+
+    if (!validations) {
+      console.log(
+        `Please fill all required fields in the ${activeComponent} component`
+      );
+      return;
+    }
     const payload = {
       catID: parseInt(formData.catID),
       status: parseInt(formData.status) || '',
-      templateOrder: parseInt(formData.templateOrder) || '',
+      templateOrder: parseInt(formData.templateOrder) || 0,
       isPro: formData.isPro ? '1' : '0',
       isNew: formData.isNew ? '1' : '0',
-      imagesCount: parseInt(formData.imagesCount) || '',
+      imagesCount: parseInt(formData.imagesCount) || 0  ,
       templateBaseURL: formData.templateBaseURL,
       templateFrameURL: formData.templateFrameURL,
       templateThumbnailURL: formData.templateThumbnailURL,
@@ -154,7 +177,7 @@ const Templatesmain: React.FC = () => {
         </Link>
       </div>
 
-      <div className=" py-5 z-9 sticky top-[85px] bg-[#F1F5F9] dark:bg-[#1A222C] border-none">
+      <div className=" py-5  top-[85px] bg-[#F1F5F9] dark:bg-[#1A222C] border-none">
         <span className=" md:text-[20px] px-2 py-4   font-semibold text-black dark:text-white">
           Create Templates
         </span>
@@ -215,6 +238,7 @@ const Templatesmain: React.FC = () => {
                       name="status"
                       id="status"
                       placeholder="Status"
+                      required
                       value={formData.status}
                       onChange={handleInputChange}
                     />
@@ -274,6 +298,7 @@ const Templatesmain: React.FC = () => {
                       name="templateSize"
                       id="templateSize"
                       placeholder="templateSize"
+                      required
                       value={formData.templateSize}
                       onChange={handleInputChange}
                     />
@@ -293,6 +318,7 @@ const Templatesmain: React.FC = () => {
                       name="templateWidth"
                       id="templateWidth"
                       placeholder="templateWidth"
+                      required
                       value={formData.templateWidth}
                       onChange={handleInputChange}
                     />
@@ -312,6 +338,7 @@ const Templatesmain: React.FC = () => {
                       name="templateHeight"
                       id="templateHeight"
                       placeholder="templateHeight"
+                      required
                       value={formData.templateHeight}
                       onChange={handleInputChange}
                     />
@@ -333,6 +360,7 @@ const Templatesmain: React.FC = () => {
                       name="thumbnailWidth"
                       id="thumbnailWidth"
                       placeholder="thumbnailWidth"
+                      required
                       value={formData.thumbnailWidth}
                       onChange={handleInputChange}
                     />
@@ -352,6 +380,7 @@ const Templatesmain: React.FC = () => {
                       name="thumbnailHeight"
                       id="thumbnailHeight"
                       placeholder="thumbnailHeight"
+                      required
                       value={formData.thumbnailHeight}
                       onChange={handleInputChange}
                     />
@@ -449,15 +478,21 @@ const Templatesmain: React.FC = () => {
                 </div>
               </div>
 
+              {/* {activeComponent === 'image' && ( */}
               <div className="mt-6 ">
-                <ImageItems />
+                <ImageItems ref={childRefs.imageItems} />
               </div>
-              <div className="mt-3 ">
-                <TextItems />
+              {/* // )} */}
+              {/* {activeComponent === 'text' && ( */}
+              <div className="mt-6 ">
+                <TextItems ref={childRefs.textItems} />
               </div>
-              <div className="mt-3 ">
-                <StickerItems />
+              {/* // )} */}
+              {/* {activeComponent === 'sticker' && ( */}
+              <div className="mt-6 ">
+                <StickerItems ref={childRefs.stickerItems} />
               </div>
+              {/* )} */}
             </div>
 
             <div className="flex py-4">

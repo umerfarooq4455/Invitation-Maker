@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import logo from './logo.png';
 import { VscGitPullRequestCreate } from 'react-icons/vsc';
 import { FaRegFontAwesome } from 'react-icons/fa6';
+import { PiSelectionBackground } from 'react-icons/pi';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -208,6 +209,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 >
                   <FaRegFontAwesome width={18} height={19} />
                   Fonts List
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/backgroundlist"
+                  className={`group relative flex items-center gap-2.5 rounded-[10px] px-4 py-2 font-medium   duration-300 ease-in-out hover:bg-gradient-to-r hover:from-[#E11D48]  hover:to-[#ff7896] hover:text-[#fff] dark:hover:bg-meta-4 dark:text-[#fff] ' ${
+                    pathname.includes('backgroundlist') &&
+                    'text-[#fff] dark:text-[#fff] bg-gradient-to-r from-[#E11D48] to-[#ff7896] dark:bg-meta-4'
+                  }`}
+                >
+                  <PiSelectionBackground width={19} height={19} />
+                  Background List
                 </NavLink>
               </li>
             </ul>

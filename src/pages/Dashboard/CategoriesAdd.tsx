@@ -79,7 +79,7 @@ const CategoriesAdd: React.FC = () => {
     <>
       <Toaster position="top-center" reverseOrder={false} />
 
-      <div className="px-1 py-5 sticky top-[85px] bg-[#F1F5F9] dark:bg-[#1A222C]  border-none">
+      <div className="px-1 py-5  top-[85px]   border-none">
         <AddCategoryModal
           isOpen={isModalOpen}
           onClose={closeModal}
@@ -204,6 +204,55 @@ const CategoriesAdd: React.FC = () => {
                     </td>
 
                     <td className="  py-5 px-4 flex justify-end dark:border-strokedark">
+                      <button
+                        className="hover:text-[#E11D48] mx-4"
+                        onClick={() => {
+                          CategoryDeti(catItem.cat_id);
+                          openModalEdit();
+                        }}
+                      >
+                        <svg
+                          width="25px"
+                          height="25px"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M13 21H21"
+                            className={`stroke-current ${
+                              isDarkMode
+                                ? 'text-[#000] dark:text-[#fff]'
+                                : 'text-[#000] dark:text-[#fff]'
+                            }`}
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M20.0651 7.39423L7.09967 20.4114C6.72438 20.7882 6.21446 21 5.68265 21H4.00383C3.44943 21 3 20.5466 3 19.9922V18.2987C3 17.7696 3.20962 17.2621 3.58297 16.8873L16.5517 3.86681C19.5632 1.34721 22.5747 4.87462 20.0651 7.39423Z"
+                            className={`stroke-current ${
+                              isDarkMode
+                                ? 'text-[#000] dark:text-[#fff]'
+                                : 'text-[#000] dark:text-[#fff]'
+                            }`}
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M15.3097 5.30981L18.7274 8.72755"
+                            className={`stroke-current ${
+                              isDarkMode
+                                ? 'text-[#000] dark:text-[#fff]'
+                                : 'text-[#000] dark:text-[#fff]'
+                            }`}
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
                       <div className="flex items-center ">
                         <EditcategoryModal
                           isOpen={isModalEdit}
@@ -219,56 +268,6 @@ const CategoriesAdd: React.FC = () => {
                         {/* edit  list item button using there id */}
 
                         {/* edit  list button  */}
-
-                        <button
-                          className="hover:text-[#E11D48] mx-2"
-                          onClick={() => {
-                            CategoryDeti(catItem.cat_id);
-                            openModalEdit();
-                          }}
-                        >
-                          <svg
-                            width="25px"
-                            height="25px"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13 21H21"
-                              className={`stroke-current ${
-                                isDarkMode
-                                  ? 'text-[#000] dark:text-[#fff]'
-                                  : 'text-[#000] dark:text-[#fff]'
-                              }`}
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M20.0651 7.39423L7.09967 20.4114C6.72438 20.7882 6.21446 21 5.68265 21H4.00383C3.44943 21 3 20.5466 3 19.9922V18.2987C3 17.7696 3.20962 17.2621 3.58297 16.8873L16.5517 3.86681C19.5632 1.34721 22.5747 4.87462 20.0651 7.39423Z"
-                              className={`stroke-current ${
-                                isDarkMode
-                                  ? 'text-[#000] dark:text-[#fff]'
-                                  : 'text-[#000] dark:text-[#fff]'
-                              }`}
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M15.3097 5.30981L18.7274 8.72755"
-                              className={`stroke-current ${
-                                isDarkMode
-                                  ? 'text-[#000] dark:text-[#fff]'
-                                  : 'text-[#000] dark:text-[#fff]'
-                              }`}
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
 
                         {/* edit  list button  */}
                       </div>

@@ -6,13 +6,13 @@ import { BsArrowDown } from 'react-icons/bs';
 interface AddCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  stickelist: any;
+  bglist: any;
 }
 type Timeout = ReturnType<typeof setTimeout>;
-const StikeraddModal: React.FC<AddCategoryModalProps> = ({
+const Bgaddmodal: React.FC<AddCategoryModalProps> = ({
   isOpen,
   onClose,
-  stickelist,
+  bglist,
 }) => {
   const { instance } = useMyContext();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -32,7 +32,7 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
 
   useEffect(() => {
     fetchCategories();
-    stickelist();
+    bglist();
   }, []);
 
   const fetchCategories = async () => {
@@ -127,12 +127,12 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
     try {
       const payload = {
         body: {
-          sticker_url: uploadedFileUrl,
-          sticker_category_id: selectedCategory,
+          background_url: uploadedFileUrl,
+          background_category_id: selectedCategory,
         },
       };
 
-      const response = await instance.post('/sticker/create/', payload, {
+      const response = await instance.post('/background/create/', payload, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -140,7 +140,7 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
 
       if (response.status === 200) {
         toast.success('Sticker saved successfully');
-        stickelist();
+        bglist();
         setSelectedFile(null);
         onClose();
       } else {
@@ -159,7 +159,7 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
           <div className="flex justify-between px-2">
             <div className="flex items-center">
               <h1 className="text-[16px] text-[#000] dark:text-white font-bold mb-4">
-                Add New Sticker
+                Add New Background
               </h1>
             </div>
             <div>
@@ -227,8 +227,8 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
                       <input
                         type="radio"
                         className="form-checkbox h-5 w-5 rounded text-[#fff]"
-                        checked={selectedCategory === catItem.cat_id} // Check against selectedCategory
-                        onChange={() => handleCheckboxFilter(catItem)} // Pass the entire category object
+                        checked={selectedCategory === catItem.cat_id} 
+                        onChange={() => handleCheckboxFilter(catItem)} 
                       />
                       <span className="ml-2"> {catItem.en}</span>
                     </label>
@@ -257,7 +257,7 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
                 {!selectedFile ? (
                   <>
                     <label className="inline-flex p-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90 cursor-pointer">
-                      Upload Sticker
+                      Upload Background
                       <input
                         type="file"
                         className="hidden"
@@ -274,7 +274,7 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
                       {selectedFile.name} selected
                     </span>
                     <label className="inline-flex p-2 items-center justify-center mt-2 rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90 cursor-pointer">
-                      Re-upload Sticker
+                      Re-upload Background
                       <input
                         type="file"
                         className="hidden"
@@ -292,7 +292,7 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
               onClick={handleSaveSticker}
               className="inline-flex px-3 py-2 items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] text-center font-medium text-white hover:bg-opacity-90"
             >
-              Save Sticker
+              Save Background
             </button>
           </div>
         </div>
@@ -301,4 +301,4 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
   );
 };
 
-export default StikeraddModal;
+export default Bgaddmodal;

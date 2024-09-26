@@ -11,6 +11,7 @@ import Templatesmain from './pages/Templates/Templatesmain';
 import Templatedlistmain from './pages/Templatelist/Templatedlistmain';
 import Addfont from './pages/Addfont/Addfont';
 import Stikerlist from './pages/Stikerlist/Stikerlist';
+import Bglist from './pages/Backgoundlmagelist/Bglist';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -59,6 +60,7 @@ function App() {
                   </Route>
                   <Route path="/Addfont" element={<Addfont />} />
                   <Route path="/stickerslist" element={<Stikerlist />} />
+                  <Route path="/backgroundlist" element={<Bglist />} />
                 </Routes>
               </DefaultLayout>
             ) : (

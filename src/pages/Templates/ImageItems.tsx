@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useImperativeHandle, forwardRef, useState } from 'react';
 import { useMyContext } from '../../contextapi/MyProvider';
 
 interface Item {
@@ -12,12 +12,37 @@ interface Item {
   mask: string;
 }
 
-const ImageItems: React.FC = () => {
+const ImageItems = forwardRef((props, ref) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeItems, setActiveItems] = useState<number | null>(null);
   const { Imagesitem, setImagesitem } = useMyContext();
+  useImperativeHandle(ref, () => ({
+    validate: () => {
+      let isValid = true;
 
-  console.log('Image Items', Imagesitem);
+      // Loop through each item to validate required fields
+      Imagesitem.forEach((item, index) => {
+        if (
+          !item.itemWidth ||
+          !item.itemHeight ||
+          !item.itemLeftMargin ||
+          !item.itemTopMargin ||
+          !item.itemRightMargin ||
+          !item.itemBottomMargin ||
+          !item.mask
+        ) {
+          // Toggle accordion to show the first invalid item
+          toggleAccordion(0);
+          toggleActiveItems(index); // Open accordion for the invalid item
+          document.getElementById(`itemWidth${index}`)?.focus(); // Focus on the first invalid field
+          isValid = false;
+          return; // Stop further validation on first invalid item
+        }
+      });
+
+      return isValid;
+    },
+  }));
 
   const toggleAccordion = (index: number): void => {
     setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -59,7 +84,6 @@ const ImageItems: React.FC = () => {
         newItems[index].mask = fileUrl;
       } catch (error) {
         console.error('Error uploading file:', error);
-        // Handle the error (you might want to show a message to the user)
       }
     } else {
       newItems[index].mask = '';
@@ -96,6 +120,10 @@ const ImageItems: React.FC = () => {
   const deleteItem = (index: number) => {
     const newItems = Imagesitem.filter((_, i) => i !== index);
     setImagesitem(newItems);
+    // Optionally, close the accordion when an item is deleted
+    if (activeItems === index) {
+      setActiveItems(null);
+    }
   };
 
   return (
@@ -172,11 +200,12 @@ const ImageItems: React.FC = () => {
                         </label>
                         <div className="relative">
                           <input
-                            className="block w-full px-3 py-2.5 resize-none rounded-[10px] border border-[#B8BAC7] bg-white text-[16px] font-normal text-[#1B254B] dark:border-meta-4 dark:bg-meta-4 dark:text-white dark:placeholder-[#fff]"
+                            className="block  w-full px-3 py-2.5 resize-none rounded-[10px] border border-[#B8BAC7] bg-white text-[16px] font-normal text-[#1B254B] dark:border-meta-4 dark:bg-meta-4 dark:text-white dark:placeholder-[#fff]"
                             type="text"
                             id={`itemWidth${index}`}
                             placeholder="Item Width"
                             value={item.itemWidth}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'itemWidth')
                             }
@@ -197,6 +226,7 @@ const ImageItems: React.FC = () => {
                             id={`itemHeight${index}`}
                             placeholder="Item Height"
                             value={item.itemHeight}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'itemHeight')
                             }
@@ -217,6 +247,7 @@ const ImageItems: React.FC = () => {
                             id={`itemLeftMargin${index}`}
                             placeholder="Item Left Margin"
                             value={item.itemLeftMargin}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'itemLeftMargin')
                             }
@@ -239,6 +270,7 @@ const ImageItems: React.FC = () => {
                             id={`itemTopMargin${index}`}
                             placeholder="Item Top Margin"
                             value={item.itemTopMargin}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'itemTopMargin')
                             }
@@ -259,6 +291,7 @@ const ImageItems: React.FC = () => {
                             id={`itemRightMargin${index}`}
                             placeholder="Item Right Margin"
                             value={item.itemRightMargin}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'itemRightMargin')
                             }
@@ -279,6 +312,7 @@ const ImageItems: React.FC = () => {
                             id={`itemBottomMargin${index}`}
                             placeholder="Item Bottom Margin"
                             value={item.itemBottomMargin}
+                            required
                             onChange={(e) =>
                               handleInputChange(e, index, 'itemBottomMargin')
                             }
@@ -351,6 +385,6 @@ const ImageItems: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default ImageItems;

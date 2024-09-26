@@ -186,6 +186,15 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
       toast.error('The first English language field must be filled.');
       return;
     }
+    if (selectedCategoryValue === null) {
+      toast.error('Thumbnail category is required.');
+      return;
+    }
+
+    if (selectedFile === null) {
+      toast.error('Category Image is required.');
+      return;
+    }
 
     const body = {
       thumbnailurl: selectedFile?.file_path,
@@ -218,8 +227,8 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
-      <div className="fixed inset-0  z-50 overflow-auto bg-[#414444] bg-opacity-50 dark:bg-[#13151E] dark:bg-opacity-30 flex ">
-        <div className="relative py-4 px-2 bg-white dark:bg-boxdark w-full max-w-md m-auto flex-col flex rounded-lg">
+      <div className="fixed inset-0 z-50  overflow-auto  flex bg-[#414444] bg-opacity-30 dark:bg-[#13151E] dark:bg-opacity-30">
+        <div className="relative py-4 px-2 z-10 bg-white dark:bg-boxdark w-full max-w-md m-auto flex-col flex rounded-lg">
           <div className="flex justify-between px-2 mb-3">
             <div className="flex items-center">
               <h1 className="text-[16px] text-[#000] dark:text-white font-bold mb-4">

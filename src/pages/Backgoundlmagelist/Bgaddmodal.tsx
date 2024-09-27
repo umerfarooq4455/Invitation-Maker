@@ -47,11 +47,13 @@ const Bgaddmodal: React.FC<AddCategoryModalProps> = ({
       setLoading(false);
     }
   };
+
   const handleCheckboxFilter = (category: any) => {
     setSelectedfileroption(category.en); // Set the selected name
     setSelectedCategory(category.cat_id); // Set the selected ID
     setIsDropdownOpefilter(false);
   };
+
   useEffect(() => {
     if (isLoading) {
       const timeout = setTimeout(() => {
@@ -227,8 +229,8 @@ const Bgaddmodal: React.FC<AddCategoryModalProps> = ({
                       <input
                         type="radio"
                         className="form-checkbox h-5 w-5 rounded text-[#fff]"
-                        checked={selectedCategory === catItem.cat_id} 
-                        onChange={() => handleCheckboxFilter(catItem)} 
+                        checked={selectedCategory === catItem.cat_id}
+                        onChange={() => handleCheckboxFilter(catItem)}
                       />
                       <span className="ml-2"> {catItem.en}</span>
                     </label>

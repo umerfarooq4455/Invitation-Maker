@@ -18,6 +18,7 @@ const Bglist: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
+    fetchAllBackgrounds(); // Fetch all backgrounds initially
   }, []);
 
   const fetchCategories = async () => {
@@ -26,10 +27,6 @@ const Bglist: React.FC = () => {
       const response = await instance.get('/category_list/');
       const categoriesData = response.data.results;
       setCategories(categoriesData);
-      if (categoriesData.length > 0) {
-        setSelectedfileroption(categoriesData[0].en);
-        bglist(categoriesData[0].cat_id);
-      }
     } catch (err) {
       setError('Failed to fetch categories');
     } finally {
@@ -37,12 +34,31 @@ const Bglist: React.FC = () => {
     }
   };
 
-  const bglist = async (cat_id: number) => {
+  const fetchAllBackgrounds = async () => {
     setLoading(true);
     try {
-      const response = await instance.get(
-        `/background/list/?cat_id=${cat_id || 39}`
-      );
+      const response = await instance.get('/background/list/');
+      const allBackgrounds = response.data.results;
+      setbackgoundlist(allBackgrounds);
+      if (allBackgrounds.length === 0) {
+        setError('No Backgrounds available.');
+      } else {
+        setError(null);
+      }
+    } catch (err) {
+      setError('Failed to fetch Backgrounds');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const bglist = async (cat_id?: number) => {
+    setLoading(true);
+    try {
+      const url = cat_id
+        ? `/background/list/?cat_id=${cat_id}`
+        : '/background/list/';
+      const response = await instance.get(url);
       const Backgrounds = response.data.results;
       setbackgoundlist(Backgrounds);
       if (Backgrounds.length === 0) {
@@ -60,7 +76,7 @@ const Bglist: React.FC = () => {
   const handleCheckboxFilter = (category: any) => {
     setSelectedfileroption(category.en);
     setIsDropdownOpefilter(false);
-    bglist(category.cat_id);
+    bglist(category.cat_id); // Fetch images for the selected category
   };
 
   const openModal = () => {
@@ -75,14 +91,12 @@ const Bglist: React.FC = () => {
     try {
       await instance.delete(`/background/delete/${id}`);
       toast.success('Font Deleted Successfully');
-      if (selectedfileroption) {
-        const selectedCategory = categories.find(
-          (cat) => cat.en === selectedfileroption
-        );
-        if (selectedCategory) {
-          bglist(selectedCategory.cat_id);
-        }
-      }
+      // Fetch the background list again after deletion
+      selectedfileroption
+        ? bglist(
+            categories.find((cat) => cat.en === selectedfileroption)?.cat_id
+          )
+        : fetchAllBackgrounds();
     } catch (err: any) {
       toast.error('Failed to delete Background');
     }
@@ -114,13 +128,13 @@ const Bglist: React.FC = () => {
               <div className="relative inline-block text-left">
                 <button
                   type="button"
-                  className="inline-flex w-75  justify-between border-[#E11D48] rounded-lg border-[2px] border-dashed bg-[#fff] p-2 text-sm font-medium leading-5 transition duration-150 ease-in-out dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
+                  className="inline-flex w-75 justify-between border-[#E11D48] rounded-lg border-[2px] border-dashed bg-[#fff] p-2 text-sm font-medium leading-5 transition duration-150 ease-in-out dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
                   onClick={() => setIsDropdownOpefilter(!isDropdownOpefilter)}
                   aria-haspopup="true"
                   aria-expanded={isDropdownOpefilter}
                 >
                   <span className="pr-2 font-bold">Filter by category:</span>
-                  {selectedfileroption}
+                  {selectedfileroption || 'All'}
                   <svg
                     className={`h-5 w-5 px-0 transition-transform duration-200 ${
                       isDropdownOpefilter ? '-rotate-90' : '-rotate-180'
@@ -139,10 +153,24 @@ const Bglist: React.FC = () => {
                   }`}
                 >
                   <div className="py-1">
+                    <label
+                      className="flex cursor-pointer items-center bg-[#fff] px-4 py-2 text-sm leading-5 dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
+                      onClick={() => {
+                        setSelectedfileroption(null);
+                        fetchAllBackgrounds();
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        className="form-checkbox h-5 w-5 rounded text-[#fff]"
+                        checked={!selectedfileroption}
+                      />
+                      <span className="ml-2">All</span>
+                    </label>
                     {categories.map((catItem: any) => (
                       <label
                         key={catItem.cat_id}
-                        className="flex cursor-pointer   items-center bg-[#fff] px-4 py-2 text-sm leading-5 dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
+                        className="flex cursor-pointer items-center bg-[#fff] px-4 py-2 text-sm leading-5 dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
                       >
                         <input
                           type="radio"

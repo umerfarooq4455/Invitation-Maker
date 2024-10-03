@@ -4,15 +4,17 @@ import React, { createContext, useState, ReactNode, useContext } from 'react';
 interface State {
   user: { name: string; email: string } | null;
   theme: string;
+  
 }
 
 interface StikerItem {
-  name: string;
+  sticker_url: string;
   itemLeftMargin: string;
   itemTopMargin: string;
   itemRightMargin: string;
   itemBottomMargin: string;
   disableSelect: boolean;
+  preview: string;
 }
 
 interface ImageItem {
@@ -24,6 +26,7 @@ interface ImageItem {
   itemBottomMargin: string;
   rotated: string;
   mask: string;
+  preview: string;
 }
 
 interface TextItem {
@@ -47,7 +50,7 @@ interface DetailedCategory {
   is_featured?: string;
   category_order?: string;
   [key: string]: any;
-  categoryimageurl? : any
+  categoryimageurl?: any;
 }
 interface Categorid {
   id: number;
@@ -91,6 +94,7 @@ interface ContextType {
   refreshCategories: () => void;
   shouldRefresh: Validrefesh | false;
   setShouldRefresh: React.Dispatch<React.SetStateAction<Validrefesh | false>>;
+  validateFields: () => boolean;
 }
 
 const MyContext = createContext<ContextType | undefined>(undefined);
@@ -160,12 +164,13 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const [stickersitems, setStickersitems] = useState<StikerItem[]>([
     {
-      name: '',
+      sticker_url: '',
       itemLeftMargin: '',
       itemTopMargin: '',
       itemRightMargin: '',
       itemBottomMargin: '',
       disableSelect: false,
+      preview: '',
     },
   ]);
 
@@ -179,19 +184,34 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       itemBottomMargin: '',
       rotated: '',
       mask: '',
+      preview: '',
     },
   ]);
-  const [shouldRefresh, setShouldRefresh] = useState<Validrefesh | false>(false);
+
+  const validateFields = (): boolean => {
+    if (!Imagesitem.length || !textsitems.length || !stickersitems.length) {
+      return false;
+    }
+    return true;
+  };
+  
+  const [shouldRefresh, setShouldRefresh] = useState<Validrefesh | false>(
+    false
+  );
 
   const refreshCategories = () => {
-    setShouldRefresh((prev) => (prev === false ? { id: 1, type: true } : false));
+    setShouldRefresh((prev) =>
+      prev === false ? { id: 1, type: true } : false
+    );
   };
   const [isValid, setIsValid] = useState<Validinput | boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   return (
     <MyContext.Provider
       value={{
-        state,shouldRefresh, setShouldRefresh,
+        state,validateFields,
+        shouldRefresh,
+        setShouldRefresh,
         refreshCategories,
         isDarkMode,
         setIsDarkMode,

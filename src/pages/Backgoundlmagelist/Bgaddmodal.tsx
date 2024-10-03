@@ -49,8 +49,8 @@ const Bgaddmodal: React.FC<AddCategoryModalProps> = ({
   };
 
   const handleCheckboxFilter = (category: any) => {
-    setSelectedfileroption(category.en); // Set the selected name
-    setSelectedCategory(category.cat_id); // Set the selected ID
+    setSelectedfileroption(category.en);
+    setSelectedCategory(category.cat_id);
     setIsDropdownOpefilter(false);
   };
 

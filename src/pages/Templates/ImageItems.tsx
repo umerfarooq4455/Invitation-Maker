@@ -1,5 +1,8 @@
-import React, { useImperativeHandle, forwardRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMyContext } from '../../contextapi/MyProvider';
+import pluse from './images/pulse.svg';
+import edit from './images/edit.svg';
+import defultpdfimg from './images/defult.svg';
 
 interface Item {
   itemWidth: string;
@@ -12,44 +15,36 @@ interface Item {
   mask: string;
 }
 
-const ImageItems = forwardRef((props, ref) => {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [activeItems, setActiveItems] = useState<number | null>(null);
+const ImageItems = () => {
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [activeItems, setActiveItems] = useState<number>(1);
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: number]: boolean;
+  }>({});
   const { Imagesitem, setImagesitem } = useMyContext();
-  useImperativeHandle(ref, () => ({
-    validate: () => {
-      let isValid = true;
 
-      // Loop through each item to validate required fields
-      Imagesitem.forEach((item, index) => {
-        if (
-          !item.itemWidth ||
-          !item.itemHeight ||
-          !item.itemLeftMargin ||
-          !item.itemTopMargin ||
-          !item.itemRightMargin ||
-          !item.itemBottomMargin ||
-          !item.mask
-        ) {
-          // Toggle accordion to show the first invalid item
-          toggleAccordion(0);
-          toggleActiveItems(index); // Open accordion for the invalid item
-          document.getElementById(`itemWidth${index}`)?.focus(); // Focus on the first invalid field
-          isValid = false;
-          return; // Stop further validation on first invalid item
-        }
-      });
+  const initialItem = {
+    itemWidth: '',
+    itemHeight: '',
+    itemLeftMargin: '',
+    itemTopMargin: '',
+    itemRightMargin: '',
+    itemBottomMargin: '',
+    rotated: '',
+    mask: '',
+    preview: '',
+  };
 
-      return isValid;
-    },
-  }));
-
+  useEffect(() => {
+    setImagesitem([initialItem]);
+  }, []);
   const toggleAccordion = (index: number): void => {
-    setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
+    setActiveIndex((prevIndex) => (prevIndex === index ? -1 : index));
   };
 
   const toggleActiveItems = (index: number): void => {
-    setActiveItems((prevIndex) => (prevIndex === index ? null : index));
+    validateItem(index);
+    setActiveItems((prevIndex) => (prevIndex === index ? -1 : index));
   };
 
   const handleFileChange = async (
@@ -59,13 +54,11 @@ const ImageItems = forwardRef((props, ref) => {
     const newItems = [...Imagesitem];
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-
-      // Create a FormData object to send the file
+      const filePreview = URL.createObjectURL(file);
       const formData = new FormData();
       formData.append('file', file);
 
       try {
-        // Make the API request to upload the file
         const response = await fetch(
           'https://collage-maker.trippleapps.com/file/upload/',
           {
@@ -74,7 +67,6 @@ const ImageItems = forwardRef((props, ref) => {
           }
         );
 
-        // Check if the request was successful
         if (!response.ok) {
           throw new Error('File upload failed');
         }
@@ -82,47 +74,45 @@ const ImageItems = forwardRef((props, ref) => {
         const data = await response.json();
         const fileUrl = data.results.file_path;
         newItems[index].mask = fileUrl;
+        newItems[index].preview = filePreview;
+        setImagesitem(newItems);
       } catch (error) {
         console.error('Error uploading file:', error);
       }
-    } else {
-      newItems[index].mask = '';
     }
-    setImagesitem(newItems);
   };
 
+  const validateItem = (index: number) => {
+    const item = Imagesitem[index];
+    const isValid =
+      item.itemWidth &&
+      item.itemHeight &&
+      item.itemLeftMargin &&
+      item.itemTopMargin &&
+      item.mask;
+    setValidationErrors((prevErrors) => ({
+      ...prevErrors,
+      [index]: !isValid,
+    }));
+  };
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number,
     field: keyof Item
   ) => {
     const newItems = [...Imagesitem];
-    newItems[index][field] = event.target.value;
+    newItems[index] = { ...newItems[index], [field]: event.target.value };
     setImagesitem(newItems);
+    validateItem(index);
   };
-
   const addItem = () => {
-    setImagesitem([
-      ...Imagesitem,
-      {
-        itemWidth: '',
-        itemHeight: '',
-        itemLeftMargin: '',
-        itemTopMargin: '',
-        itemRightMargin: '',
-        itemBottomMargin: '',
-        rotated: '',
-        mask: '',
-      },
-    ]);
+    setImagesitem((prevItems) => [...prevItems, { ...initialItem }]);
   };
-
   const deleteItem = (index: number) => {
     const newItems = Imagesitem.filter((_, i) => i !== index);
     setImagesitem(newItems);
-    // Optionally, close the accordion when an item is deleted
     if (activeItems === index) {
-      setActiveItems(null);
+      setActiveItems(0);
     }
   };
 
@@ -190,6 +180,52 @@ const ImageItems = forwardRef((props, ref) => {
 
                 {activeItems === index && (
                   <div className="pb-6">
+                    <div className="mt-4 flex">
+                      <div className="relative flex pb-5">
+                        <div className="relative">
+                          <label htmlFor={`coverFileInput-${index}`}>
+                            {item.preview ? (
+                              <img
+                                src={item.preview}
+                                alt="Preview"
+                                className="accordion-btn relative h-[80px] w-[80px]  cursor-pointer rounded-[18px] border-[3.5px] border-[#e3224d] p-2 text-sm text-white"
+                              />
+                            ) : (
+                              <img
+                                src={defultpdfimg}
+                                alt="Default"
+                                className="accordion-btn relative h-[76px] w-[76px] cursor-pointer rounded-[18px] border-[3.5px] border-[#e3224d] p-2 text-sm text-white"
+                              />
+                            )}
+                          </label>
+
+                          <label
+                            htmlFor={`coverFileInput-${index}`}
+                            className="absolute -right-3 -top-3 h-[39px] w-[39px] cursor-pointer rounded-3xl border-[#e3224d] p-1 text-white"
+                          >
+                            <img src={item.preview ? edit : pluse} alt="Icon" />
+                          </label>
+                        </div>
+
+                        {/* File input */}
+                        <input
+                          type="file"
+                          required
+                          accept="image/*"
+                          onChange={(e) => handleFileChange(e, index)}
+                          className="hidden"
+                          id={`coverFileInput-${index}`}
+                        />
+                      </div>
+                      <label className="ml-7 flex justify-center items-center text-[15px] font-bold text-black dark:text-white">
+                        Upload Image
+                      </label>
+                    </div>
+                    {validationErrors[index] && (
+                      <div className="text-red-500">
+                        Please upload an image and fill all required fields.
+                      </div>
+                    )}
                     <div className="flex flex-wrap -mx-2 md:mt-4">
                       <div className="w-full sm:w-1/3 px-2">
                         <label
@@ -341,26 +377,9 @@ const ImageItems = forwardRef((props, ref) => {
                           />
                         </div>
                       </div>
-                      <div className="w-full sm:w-1/3 px-2">
-                        <label
-                          className="block mb-2 text-sm font-bold text-black dark:text-white"
-                          htmlFor={`mask${index}`}
-                        >
-                          Upload Image
-                        </label>
-                        <div className="relative mt-[8px] flex items-center">
-                          <input
-                            className="block mt-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                            type="file"
-                            required
-                            id={`mask${index}`}
-                            onChange={(e) => handleFileChange(e, index)}
-                          />
-                        </div>
-                      </div>
-                      <div className="w-full flex justify-end items-end sm:w-1/3 px-2">
+                      <div className="w-full sm:w-1/3 px-2 mt-[32px]">
                         <button
-                          className="rounded-[10px] bg-red-500 text-white px-4 py-2 mt-[3px]"
+                          className="rounded-[10px] bg-red-500 text-white px-4 py-2 "
                           onClick={() => deleteItem(index)}
                         >
                           Delete
@@ -374,7 +393,7 @@ const ImageItems = forwardRef((props, ref) => {
             <div className="flex py-4">
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] py-2 px-6 text-center font-medium text-white hover:bg-opacity-90"
+                className="inline-flex items-center justify-center rounded-[10px] bg-[#ff6e8d]  py-2 px-6 text-center font-bold text-[#fff] hover:bg-opacity-90"
                 onClick={addItem}
               >
                 Add Image Item
@@ -385,6 +404,6 @@ const ImageItems = forwardRef((props, ref) => {
       </div>
     </div>
   );
-});
+};
 
 export default ImageItems;

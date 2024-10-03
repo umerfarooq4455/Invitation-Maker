@@ -43,7 +43,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   const { instance } = useMyContext();
 
   const [isorder, setIsorder] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState('1');
   const ordervalue = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
   const [isActive, setIsActive] = useState(false);
   const [isFeatured, setIsFeatured] = useState(false);

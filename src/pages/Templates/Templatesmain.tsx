@@ -1,28 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ImageItems from './ImageItems';
 import TextItems from './TextItems';
 import StickerItems from './StickerItems';
 import { useMyContext } from '../../contextapi/MyProvider';
 import { IoArrowBackCircle } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
-// import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import pluse from './images/pulse.svg';
+import edit from './images/edit.svg';
+import defultpdfimg from './images/defult.svg';
 
 const Templatesmain: React.FC = () => {
-  const { instance, Imagesitem, stickersitems, textsitems } = useMyContext();
+  const { instance, Imagesitem, stickersitems, textsitems, validateFields } =
+    useMyContext();
+  const navigate = useNavigate();
   const [categorieslist, setCategorieslist] = useState<any | null>([]);
-  const childRefs = {
-    textItems: useRef<{ validate: () => boolean }>(null),
-    imageItems: useRef<{ validate: () => boolean }>(null),
-    stickerItems: useRef<{ validate: () => boolean }>(null),
-  };
-  const [activeComponent, setActiveComponent] = useState<
-    'text' | 'image' | 'sticker'
-  >('text');
 
   const [formData, setFormData] = useState({
     catID: '',
     status: '',
-    templateOrder: "",
+    templateOrder: '',
     isPro: false,
     isNew: false,
     imagesCount: '',
@@ -36,9 +34,6 @@ const Templatesmain: React.FC = () => {
     templateHeight: '',
   });
 
-  const handleComponentChange = (component: 'text' | 'image' | 'sticker') => {
-    setActiveComponent(component);
-  };
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
     type: string
@@ -92,25 +87,67 @@ const Templatesmain: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const validations = {
-      text: childRefs.textItems.current?.validate(),
-      image: childRefs.imageItems.current?.validate(),
-      sticker: childRefs.stickerItems.current?.validate(),
-    };
-
-    if (!validations) {
-      console.log(
-        `Please fill all required fields in the ${activeComponent} component`
-      );
+    if (!Imagesitem || !textsitems || !stickersitems) {
+      toast.error('Please fill out all required fields');
       return;
     }
+
+    // Validate image items
+    for (const item of Imagesitem) {
+      if (
+        !item.itemWidth ||
+        !item.itemHeight ||
+        !item.itemLeftMargin ||
+        !item.itemTopMargin ||
+        !item.itemRightMargin ||
+        !item.itemBottomMargin ||
+        !item.mask
+      ) {
+        toast.error('Please fill out all properties for each image item.');
+        return;
+      }
+    }
+
+    for (const item of textsitems) {
+      if (
+        !item.text ||
+        !item.itemLeftMargin ||
+        !item.itemTopMargin ||
+        !item.itemRightMargin ||
+        !item.itemBottomMargin ||
+        !item.textColor ||
+        !item.textSize ||
+        !item.textAlignment ||
+        !item.fontId ||
+        !item.fontName ||
+        !item.fontUrl
+      ) {
+        toast.error('Please fill out all properties for each text item.');
+        return false;
+      }
+    }
+
+    // Validate sticker items
+    for (const item of stickersitems) {
+      if (
+        !item.sticker_url ||
+        !item.itemLeftMargin ||
+        !item.itemTopMargin ||
+        !item.itemRightMargin ||
+        !item.itemBottomMargin
+      ) {
+        toast.error('Please fill out all properties for each sticker item.');
+        return false;
+      }
+    }
+
     const payload = {
       catID: parseInt(formData.catID),
       status: parseInt(formData.status) || '',
       templateOrder: parseInt(formData.templateOrder) || 0,
       isPro: formData.isPro ? '1' : '0',
       isNew: formData.isNew ? '1' : '0',
-      imagesCount: parseInt(formData.imagesCount) || 0  ,
+      imagesCount: parseInt(formData.imagesCount) || 0,
       templateBaseURL: formData.templateBaseURL,
       templateFrameURL: formData.templateFrameURL,
       templateThumbnailURL: formData.templateThumbnailURL,
@@ -132,6 +169,12 @@ const Templatesmain: React.FC = () => {
       });
 
       console.log('Response:', response.data);
+      if (response && response.data && response.data.success) {
+        toast.success('Template successfully submitted!');
+        setTimeout(() => {
+          navigate('/template-list');
+        }, 1000);
+      }
     } catch (error) {
       console.error('Error:', error);
     }
@@ -171,6 +214,7 @@ const Templatesmain: React.FC = () => {
 
   return (
     <>
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="flex items-center">
         <Link to="/templatedlist">
           <IoArrowBackCircle className="h-[54px] w-[57px] text-[#E11D48]" />{' '}
@@ -213,7 +257,7 @@ const Templatesmain: React.FC = () => {
                         <option
                           className=""
                           key={cate.cat_id}
-                          value={cate.category_order}
+                          value={cate.cat_id}
                           data-id={cate.cat_id}
                         >
                           {cate.en}
@@ -426,6 +470,7 @@ const Templatesmain: React.FC = () => {
                       />
                     </div>
                   </div>
+                  
                 </div>
                 <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/3  xl:w-1/5 px-2 mt-4">
                   <label
@@ -478,29 +523,25 @@ const Templatesmain: React.FC = () => {
                 </div>
               </div>
 
-              {/* {activeComponent === 'image' && ( */}
               <div className="mt-6 ">
-                <ImageItems ref={childRefs.imageItems} />
+                <ImageItems />
               </div>
-              {/* // )} */}
-              {/* {activeComponent === 'text' && ( */}
+
               <div className="mt-6 ">
-                <TextItems ref={childRefs.textItems} />
+                <TextItems />
               </div>
-              {/* // )} */}
-              {/* {activeComponent === 'sticker' && ( */}
+
               <div className="mt-6 ">
-                <StickerItems ref={childRefs.stickerItems} />
+                <StickerItems />
               </div>
-              {/* )} */}
             </div>
 
             <div className="flex py-4">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] py-2 px-6 text-center font-medium text-white hover:bg-opacity-90"
+                className="inline-flex items-center justify-center rounded-[10px] bg-[#E11D48] py-2 px-6 text-center font-medium text-white hover:bg-opacity-90"
               >
-                Add Template
+                Save Template
               </button>
             </div>
           </form>

@@ -1,8 +1,11 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMyContext } from '../../contextapi/MyProvider';
+import pluse from './images/pulse.svg';
+import edit from './images/edit.svg';
+import defultpdfimg from './images/defult.svg';
 
 interface Item {
-  name: string;
+  sticker_url: string;
   itemLeftMargin: string;
   itemTopMargin: string;
   itemRightMargin: string;
@@ -10,44 +13,34 @@ interface Item {
   disableSelect: boolean;
 }
 
-const StickerItems = forwardRef((props, ref) => {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [activeItems, setActiveItems] = useState<number | null>(null);
+const StickerItems = () => {
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [activeItems, setActiveItems] = useState<number>(1);
   const { stickersitems, setStickersitems } = useMyContext();
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: number]: boolean;
+  }>({});
 
-  useImperativeHandle(ref, () => ({
-    validate: () => {
-      let isValid = true;
+  const initialItem = {
+    sticker_url: '',
+    itemLeftMargin: '',
+    itemTopMargin: '',
+    itemRightMargin: '',
+    itemBottomMargin: '',
+    disableSelect: false,
+    preview: '',
+  };
 
-      // Loop through each item to validate required fields
-      stickersitems.forEach((item, index) => {
-        if (
-          !item.name ||
-          !item.itemLeftMargin ||
-          !item.itemTopMargin ||
-          !item.itemRightMargin ||
-          !item.itemBottomMargin
-        ) {
-          toggleAccordion(0);
-          toggleActiveItems(index);
-          document.getElementById(`itemWidth${index}`)?.focus();
-          isValid = false;
-          return; // Stop further validation on first invalid item
-        }
-      });
-
-      return isValid;
-    },
-  }));
-
-  console.log('Sticker Items', stickersitems);
-
+  useEffect(() => {
+    setStickersitems([initialItem]);
+  }, []);
   const toggleAccordion = (index: number): void => {
-    setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
+    setActiveIndex((prevIndex) => (prevIndex === index ? -1 : index));
   };
 
   const toggleActiveItems = (index: number): void => {
-    setActiveItems((prevIndex) => (prevIndex === index ? null : index));
+    validateItem(index);
+    setActiveItems((prevIndex) => (prevIndex === index ? -1 : index));
   };
 
   const handleInputChange = (
@@ -62,14 +55,29 @@ const StickerItems = forwardRef((props, ref) => {
       newItems[index][field] = event.target.value;
     }
     setStickersitems(newItems);
+    validateItem(index);
   };
+  const validateItem = (index: number) => {
+    const item = stickersitems[index];
+    const isValid =
+      item.sticker_url &&
+      item.itemLeftMargin &&
+      item.itemTopMargin &&
+      item.itemRightMargin &&
+      item.itemBottomMargin;
 
+    setValidationErrors((prevErrors) => ({
+      ...prevErrors,
+      [index]: !isValid,
+    }));
+  };
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
     const file = event.target.files?.[0];
     if (file) {
+      const filePreview = URL.createObjectURL(file);
       const formData = new FormData();
       formData.append('file', file);
 
@@ -87,7 +95,8 @@ const StickerItems = forwardRef((props, ref) => {
           const fileUrl = data.results.file_path;
 
           const newItems = [...stickersitems];
-          newItems[index].name = fileUrl; // Assign the file URL to the name property
+          newItems[index].sticker_url = fileUrl;
+          newItems[index].preview = filePreview;
           setStickersitems(newItems);
         } else {
           console.error('File upload failed with status:', response.status);
@@ -97,18 +106,10 @@ const StickerItems = forwardRef((props, ref) => {
       }
     }
   };
+
+  console.log('asdf', stickersitems);
   const addItem = () => {
-    setStickersitems([
-      ...stickersitems,
-      {
-        name: '',
-        itemLeftMargin: '',
-        itemTopMargin: '',
-        itemRightMargin: '',
-        itemBottomMargin: '',
-        disableSelect: false,
-      },
-    ]);
+    setStickersitems((prevItems) => [...prevItems, { ...initialItem }]);
   };
 
   const deleteItem = (index: number) => {
@@ -150,7 +151,7 @@ const StickerItems = forwardRef((props, ref) => {
             {stickersitems.map((item, index) => (
               <div
                 key={index}
-                className="rounded-[10px]  bg-white dark:border-strokedark dark:bg-boxdark px-5 font-dm text-[16px] font-semibold  dark:text-[#fff] mb-4"
+                className="rounded-[10px]  bg-white dark:border-strokedark dark:bg-boxdark px-5 font-dm text-[16px] font-semibold  dark:text-[#fff] mb-3"
               >
                 <div
                   className="flex h-[48px] cursor-pointer items-center justify-between"
@@ -179,7 +180,53 @@ const StickerItems = forwardRef((props, ref) => {
                 </div>
 
                 {activeItems === index && (
-                  <div className="pb-4">
+                  <div className="pb-5">
+                    <div className="mt-4 flex">
+                      <div className="relative flex pb-5">
+                        <div className="relative">
+                          <label htmlFor={`stickerfileinput-${index}`}>
+                            {item.preview ? (
+                              <img
+                                src={item.preview}
+                                alt="Preview"
+                                className="accordion-btn relative h-[80px] w-[80px]  cursor-pointer rounded-[18px] border-[3.5px] border-[#e3224d] p-2 text-sm text-white"
+                              />
+                            ) : (
+                              <img
+                                src={defultpdfimg}
+                                alt="Default"
+                                className="accordion-btn relative h-[76px] w-[76px] cursor-pointer rounded-[18px] border-[3.5px] border-[#e3224d] p-2 text-sm text-white"
+                              />
+                            )}
+                          </label>
+
+                          <label
+                            htmlFor={`stickerfileinput-${index}`}
+                            className="absolute -right-3 -top-3 h-[39px] w-[39px] cursor-pointer rounded-3xl border-[#e3224d] p-1 text-white"
+                          >
+                            <img src={item.preview ? edit : pluse} alt="Icon" />
+                          </label>
+                        </div>
+
+                        {/* File input */}
+                        <input
+                          type="file"
+                          required
+                          accept="image/*"
+                          onChange={(e) => handleFileChange(e, index)}
+                          className="hidden"
+                          id={`stickerfileinput-${index}`}
+                        />
+                      </div>
+                      <label className="ml-7 flex justify-center items-center text-[15px] font-bold text-black dark:text-white">
+                        Upload Image
+                      </label>
+                    </div>
+                    {validationErrors[index] && (
+                      <div className="text-red-500">
+                        Please upload an image and fill all required fields.
+                      </div>
+                    )}
                     <div className="flex flex-wrap -mx-2 md:mt-4">
                       <div className="w-full sm:w-1/3 px-2">
                         <label
@@ -267,31 +314,15 @@ const StickerItems = forwardRef((props, ref) => {
                           />
                         </div>
                       </div>
-                      <div className="w-full sm:w-1/3 px-2">
+
+                      <div className=" px-2">
                         <label
-                          className="block mb-2 text-sm font-bold text-black dark:text-white"
-                          htmlFor={`name${index}`}
-                        >
-                          Upload Image
-                        </label>
-                        <div className="relative mt-[8px] flex items-center">
-                          <input
-                            className="block mt-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                            type="file"
-                            required
-                            id={`name${index}`}
-                            onChange={(e) => handleFileChange(e, index)}
-                          />
-                        </div>
-                      </div>
-                      <div className="w-full sm:w-1/3 px-2">
-                        <label
-                          className="block mb-2 text-sm font-bold text-black dark:text-white"
+                          className="block  text-sm font-bold text-black dark:text-white"
                           htmlFor={`disableSelect${index}`}
                         >
                           disableSelect
                         </label>
-                        <div className="mb-[0.125rem] mt-4 block min-h-[1.5rem] ps-[1.5rem]">
+                        <div className="mb-[0.125rem] mt-5 block min-h-[1.5rem] ps-[1.5rem]">
                           <input
                             className="relative float-left -ms-[1.5rem] me-[6px] mt-[0.15rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid border-secondary-500 outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-checkbox before:shadow-transparent before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ms-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-black/60 focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-black/60 focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute  focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-checkbox checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ms-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent rtl:float-right dark:border-neutral-400 dark:checked:border-primary dark:checked:bg-primary"
                             type="checkbox"
@@ -306,7 +337,7 @@ const StickerItems = forwardRef((props, ref) => {
                           </label>
                         </div>
                       </div>
-                      <div className="w-full flex justify-end items-end mt-4">
+                      <div className="w-full sm:w-1/3 px-2 mt-[28px] ml-10">
                         <button
                           className="rounded-[10px]  bg-red-500 text-white px-4 py-2 mt-[3px]"
                           onClick={() => deleteItem(index)}
@@ -322,7 +353,7 @@ const StickerItems = forwardRef((props, ref) => {
             <div className="flex py-4">
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896] py-2 px-6 text-center font-medium text-white hover:bg-opacity-90"
+                className="inline-flex items-center justify-center rounded-[10px] bg-[#ff6e8d]  py-2 px-6 text-center font-bold text-[#fff] hover:bg-opacity-90"
                 onClick={addItem}
               >
                 Add Image Item
@@ -333,6 +364,6 @@ const StickerItems = forwardRef((props, ref) => {
       </div>
     </div>
   );
-});
+};
 
 export default StickerItems;

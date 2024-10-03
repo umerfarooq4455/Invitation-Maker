@@ -202,7 +202,7 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
     const body = {
       thumbnailurl: selectedFile?.file_path || detailedCategory.thumbnailurl,
       thumbnilcategory:
-        selectedCategoryValue !== null ? selectedCategoryValue : 'None',
+        selectedCategoryValue !== null ? selectedCategoryValue : detailedCategory.thumbnilcategory,
       category_order: selectedOption,
       is_featured: isFeatured ? 1 : 0,
       is_active: isActive ? 1 : 0,
@@ -218,14 +218,14 @@ const EditcategoryModal: React.FC<AddCategoryModalProps> = ({
 
     try {
       const response = await instance.post('/category/addedit', payload);
-      console.log('Category added successfully:', response.data);
-      toast.success('Category added successfully!');
+      console.log('Category Updated:', response.data);
+      toast.success('Category Updated');
       if (response.data) {
         refreshCategories();
       }
       onClose();
     } catch (error) {
-      console.error('Error adding category:', error);
+      console.error('Error Category Updated:', error);
     }
   };
 

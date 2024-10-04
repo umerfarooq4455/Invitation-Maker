@@ -6,13 +6,13 @@ import { BsArrowDown } from 'react-icons/bs';
 interface AddCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  stickelist: any;
+  stickerListByCategory: any;
 }
 type Timeout = ReturnType<typeof setTimeout>;
 const StikeraddModal: React.FC<AddCategoryModalProps> = ({
   isOpen,
   onClose,
-  stickelist,
+  stickerListByCategory,
 }) => {
   const { instance } = useMyContext();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -32,7 +32,7 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
 
   useEffect(() => {
     fetchCategories();
-    stickelist();
+    stickerListByCategory();
   }, []);
 
   const fetchCategories = async () => {
@@ -140,7 +140,7 @@ const StikeraddModal: React.FC<AddCategoryModalProps> = ({
 
       if (response.status === 200) {
         toast.success('Sticker saved successfully');
-        stickelist();
+        stickerListByCategory();
         setSelectedFile(null);
         onClose();
       } else {

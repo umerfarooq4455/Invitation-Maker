@@ -84,7 +84,7 @@ const Addfont: React.FC = () => {
             Fonts List
           </span>
           <div className="mr-2">
-            <form className="max-w-md mx-auto flex">
+            {/* <form className="max-w-md mx-auto flex">
               <input
                 type="text"
                 id="simple-search"
@@ -113,7 +113,7 @@ const Addfont: React.FC = () => {
                   />
                 </svg>
               </button>
-            </form>
+            </form> */}
           </div>
         </div>
         {loading ? (

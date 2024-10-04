@@ -67,7 +67,7 @@ const Templatedlistmain: React.FC = () => {
             </div>
 
             <div className="flex">
-              <div className="mr-2">
+              {/* <div className="mr-2">
                 <form className="max-w-md mx-auto flex">
                   <input
                     type="text"
@@ -98,7 +98,7 @@ const Templatedlistmain: React.FC = () => {
                     </svg>
                   </button>
                 </form>
-              </div>
+              </div> */}
             </div>
           </div>
           {loading ? (
@@ -123,8 +123,11 @@ const Templatedlistmain: React.FC = () => {
                   <th className="md:w-[14%] py-4 px-4 font-bold text-[#B5B7C0] dark:text-[#B5B7C0]">
                     Template BaseURL
                   </th>
-                  <th className="py-4 px-4 font-bold text-[#B5B7C0] dark:text-[#B5B7C0]">
+                  <th className="py-4 px-4  font-bold text-[#B5B7C0] dark:text-[#B5B7C0]">
                     Status
+                  </th>
+                  <th className="py-4 px-4 font-bold text-[#B5B7C0] dark:text-[#B5B7C0]">
+                    Thumbnail Category
                   </th>
                   <th className="py-4 px-4 text-end font-bold text-[#B5B7C0] dark:text-[#B5B7C0] rounded-r-lg">
                     Actions
@@ -164,6 +167,19 @@ const Templatedlistmain: React.FC = () => {
                       `}
                       >
                         {catItem.status}
+                      </p>
+                    </td>
+                    <td className="text-end py-5 px-4 dark:border-strokedark">
+                      <p
+                        className={`font-semibold flex items-center text-center text-[16px] ${
+                          catItem.Categories[0]?.thumbnilcategory === '0'
+                            ? 'text-blue-500'
+                            : 'text-green-500'
+                        }`}
+                      >
+                        {catItem.Categories[0]?.thumbnilcategory === '0'
+                          ? 'Invitation Templates'
+                          : 'Greeting Cards'}
                       </p>
                     </td>
                     <td className="  py-5 px-4 flex justify-end items-center dark:border-strokedark ">

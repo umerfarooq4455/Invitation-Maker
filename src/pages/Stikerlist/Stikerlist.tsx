@@ -18,19 +18,15 @@ const Stikerlist: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
+    fetchAllStickers();
   }, []);
 
-  // Fetch categories and set the first category as selected by default
   const fetchCategories = async () => {
     setLoading(true);
     try {
       const response = await instance.get('/category_list/');
       const categoriesData = response.data.results;
       setCategories(categoriesData);
-      if (categoriesData.length > 0) {
-        setSelectedfileroption(categoriesData[0].en);
-        stickelist(categoriesData[0].cat_id);
-      }
     } catch (err) {
       setError('Failed to fetch categories');
     } finally {
@@ -38,19 +34,16 @@ const Stikerlist: React.FC = () => {
     }
   };
 
-  // Fetch stickers based on the selected category
-  const stickelist = async (cat_id: number) => {
+  const fetchAllStickers = async () => {
     setLoading(true);
     try {
-      const response = await instance.get(
-        `/sticker/list/?cat_id=${cat_id || 39}`
-      );
-      const stickers = response.data.results;
-      setStickerslist(stickers);
-      if (stickers.length === 0) {
-        setError('No stickers available for the selected category.');
+      const response = await instance.get('/sticker/list/');
+      const allStickers = response.data.results;
+      setStickerslist(allStickers);
+      if (allStickers.length === 0) {
+        setError('No stickers available.');
       } else {
-        setError(null); // Reset the error if stickers are found
+        setError(null);
       }
     } catch (err) {
       setError('Failed to fetch stickers');
@@ -59,10 +52,28 @@ const Stikerlist: React.FC = () => {
     }
   };
 
+  const stickerListByCategory = async (cat_id?: number) => {
+    setLoading(true);
+    try {
+      const url = cat_id ? `/sticker/list/?cat_id=${cat_id}` : '/sticker/list/';
+      const response = await instance.get(url);
+      const stickers = response.data.results;
+      setStickerslist(stickers);
+      if (stickers.length === 0) {
+        setError('No stickers available for the selected category.');
+      } else {
+        setError(null);
+      }
+    } catch (err) {
+      setError('Failed to fetch stickers');
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleCheckboxFilter = (category: any) => {
     setSelectedfileroption(category.en);
     setIsDropdownOpefilter(false);
-    stickelist(category.cat_id);
+    stickerListByCategory(category.cat_id);
   };
 
   const openModal = () => {
@@ -76,17 +87,15 @@ const Stikerlist: React.FC = () => {
   const DeleteFont = async (id: number) => {
     try {
       await instance.delete(`/sticker/delete/${id}`);
-      toast.success('Font Deleted Successfully');
-      if (selectedfileroption) {
-        const selectedCategory = categories.find(
-          (cat) => cat.en === selectedfileroption
-        );
-        if (selectedCategory) {
-          stickelist(selectedCategory.cat_id);
-        }
-      }
+      toast.success('Sticker Deleted Successfully');
+      // Fetch the background list again after deletion
+      selectedfileroption
+        ? setStickerslist(
+            categories.find((cat) => cat.en === selectedfileroption)?.cat_id
+          )
+        : stickerListByCategory();
     } catch (err: any) {
-      toast.error('Failed to delete sticker');
+      toast.error('Failed to delete Background');
     }
   };
 
@@ -96,7 +105,7 @@ const Stikerlist: React.FC = () => {
       <StikeraddModal
         isOpen={isModalOpen}
         onClose={closeModal}
-        stickelist={stickelist}
+        stickerListByCategory={stickerListByCategory}
       />
       <div className=" py-5 top-[76px] bg-[#F1F5F9] dark:bg-[#1A222C] border-none ">
         <button
@@ -126,7 +135,7 @@ const Stikerlist: React.FC = () => {
                   aria-expanded={isDropdownOpefilter}
                 >
                   <span className="pr-2 font-bold">Filter by category:</span>
-                  {selectedfileroption}
+                  {selectedfileroption || 'All'}
                   <svg
                     className={`h-5 w-5 px-0 transition-transform duration-200 ${
                       isDropdownOpefilter ? '-rotate-90' : '-rotate-180'
@@ -140,11 +149,25 @@ const Stikerlist: React.FC = () => {
                   </svg>
                 </button>
                 <div
-                  className={`ring-black absolute right-0 mt-2 w-75 origin-center rounded-md bg-[#fff] shadow-lg dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff] ${
+                  className={`ring-black absolute right-0 mt-2 w-75 z-9  origin-center rounded-md bg-[#fff] shadow-lg dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff] ${
                     isDropdownOpefilter ? 'visible w-100' : 'hidden'
                   }`}
                 >
                   <div className="py-1">
+                    <label
+                      className="flex cursor-pointer items-center bg-[#fff] px-4 py-2 text-sm leading-5 dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
+                      onClick={() => {
+                        setSelectedfileroption(null);
+                        fetchAllStickers();
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        className="form-checkbox h-5 w-5 rounded text-[#fff]"
+                        checked={!selectedfileroption}
+                      />
+                      <span className="ml-2">All</span>
+                    </label>
                     {categories.map((catItem: any) => (
                       <label
                         key={catItem.cat_id}

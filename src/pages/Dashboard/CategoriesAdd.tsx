@@ -103,7 +103,7 @@ const CategoriesAdd: React.FC = () => {
             </div>
 
             <div className="flex">
-              <form className="max-w-md mx-auto flex">
+              {/* <form className="max-w-md mx-auto flex">
                 <input
                   type="text"
                   id="simple-search"
@@ -132,7 +132,7 @@ const CategoriesAdd: React.FC = () => {
                     />
                   </svg>
                 </button>
-              </form>
+              </form> */}
             </div>
           </div>
           {loading ? (
@@ -154,9 +154,6 @@ const CategoriesAdd: React.FC = () => {
                   <th className="min-w-[126px] md:min-w-[10px] md:w-[14%] py-4 px-4 font-bold text-[#B5B7C0] dark:text-[#B5B7C0]">
                     Title
                   </th>
-                  {/* <th className="min-w-[50px] py-4 px-4 font-bold text-[#B5B7C0] dark:text-[#B5B7C0]">
-                  Order No
-                </th> */}
                   <th className="md:w-[14%] py-4 px-4 font-bold text-[#B5B7C0] dark:text-[#B5B7C0]">
                     Status
                   </th>
@@ -185,12 +182,6 @@ const CategoriesAdd: React.FC = () => {
                         {catItem.en}
                       </h5>
                     </td>
-                    {/* <td className="  py-5 px-4 dark:border-strokedark">
-                    <p className="text-[#000000] font-semibold flex items-center text-[16px] dark:text-white">
-                      {catItem.category_order}
-                    </p>
-                  </td> */}
-
                     <td className="text-end py-5 px-4 dark:border-strokedark">
                       <p
                         className={`font-semibold flex items-center text-end text-[16px] ${
@@ -258,18 +249,12 @@ const CategoriesAdd: React.FC = () => {
                           isOpen={isModalEdit}
                           onClose={closeModalEdit}
                         />
-                        {/* edit  list item button using there id */}
                         <button
                           className="hover:text-[#E11D48]"
                           onClick={() => DeleteCategory(catItem.cat_id)}
                         >
                           <TbTrash className="text-[25px] text-[#000] dark:text-[#fff]" />
                         </button>
-                        {/* edit  list item button using there id */}
-
-                        {/* edit  list button  */}
-
-                        {/* edit  list button  */}
                       </div>
                     </td>
                   </tr>

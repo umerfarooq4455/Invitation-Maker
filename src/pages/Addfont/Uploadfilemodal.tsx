@@ -97,9 +97,9 @@ const Uploadfilemodal: React.FC<AddCategoryModalProps> = ({
     } catch (error) {
       toast.error('Error uploading file');
     } finally {
-      setIsLoading(false); // Ensure loading animation stops
-      setFileUploadInitiated(false); // Reset file upload status
-      setSelectedFile(null); // Clear the selected file
+      setIsLoading(false);
+      setFileUploadInitiated(false);
+      setSelectedFile(null);
     }
   };
 

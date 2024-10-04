@@ -32,6 +32,8 @@ const Templatesmain: React.FC = () => {
     thumbnailHeight: '',
     templateWidth: '',
     templateHeight: '',
+    previewFrame: '',
+    previewThumbnail: '',
   });
 
   const handleFileChange = async (
@@ -40,53 +42,72 @@ const Templatesmain: React.FC = () => {
   ) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-
-      // Create a FormData object for file upload
       const formData = new FormData();
       formData.append('file', file);
 
-      try {
-        // Upload the file to the server
-        const response = await fetch(
-          'https://collage-maker.trippleapps.com/file/upload/',
-          {
-            method: 'POST',
-            body: formData,
+      // Create a FileReader to read the file
+      const reader = new FileReader();
+
+      // Read the file as a data URL
+      reader.onloadend = async () => {
+        const fileURL = reader.result as string; // This will contain the file data URL
+
+        try {
+          // Upload the file to the server
+          const response = await fetch(
+            'https://collage-maker.trippleapps.com/file/upload/',
+            {
+              method: 'POST',
+              body: formData,
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log(data.results.file_path);
+
+            // You can use the URL returned from the server or the local file URL for the preview
+            const uploadFileURL = data.results.file_path;
+
+            // Update the state with the new file URL
+            if (type === 'frame') {
+              setFormData((prevData) => ({
+                ...prevData,
+                templateFrameURL: uploadFileURL, // Use server URL
+                previewFrame: fileURL, // Use FileReader URL for preview
+              }));
+            } else if (type === 'thumbnail') {
+              setFormData((prevData) => ({
+                ...prevData,
+                templateThumbnailURL: uploadFileURL, // Use server URL
+                previewThumbnail: fileURL, // Use FileReader URL for preview
+              }));
+            }
+          } else {
+            console.error('File upload failed', response.statusText);
           }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data.results.file_path);
-
-          const fileURL = data.results.file_path;
-
-          // Update the state with the new file URL
-          if (type === 'frame') {
-            // setSelectedFrameFile(file);
-            setFormData((prevData) => ({
-              ...prevData,
-              templateFrameURL: fileURL,
-            }));
-          } else if (type === 'thumbnail') {
-            // setSelectedThumbnailFile(file);
-            setFormData((prevData) => ({
-              ...prevData,
-              templateThumbnailURL: fileURL,
-            }));
-          }
-        } else {
-          console.error('File upload failed', response.statusText);
+        } catch (error) {
+          console.error('Error uploading file', error);
         }
-      } catch (error) {
-        console.error('Error uploading file', error);
-      }
+      };
+
+      // Start reading the file as a data URL
+      reader.readAsDataURL(file);
     }
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    if (!formData.templateFrameURL) {
+      toast.error('Frame image is required.');
+      return;
+    }
+
+    if (!formData.templateThumbnailURL) {
+      toast.error('Thumbnail image is required.');
+      return;
+    }
     if (!Imagesitem || !textsitems || !stickersitems) {
       toast.error('Please fill out all required fields');
       return;
@@ -169,10 +190,10 @@ const Templatesmain: React.FC = () => {
       });
 
       console.log('Response:', response.data);
-      if (response && response.data && response.data.success) {
+      if (response.data) {
         toast.success('Template successfully submitted!');
         setTimeout(() => {
-          navigate('/template-list');
+          navigate('/templatedlist');
         }, 1000);
       }
     } catch (error) {
@@ -260,7 +281,14 @@ const Templatesmain: React.FC = () => {
                           value={cate.cat_id}
                           data-id={cate.cat_id}
                         >
-                          {cate.en}
+                          <span className="text-black">{cate.en}</span>
+                          {' ========================= '}
+
+                          <span className="text-red-500">
+                            {cate.thumbnilcategory === '0'
+                              ? 'Invitation Templates'
+                              : 'Greeting Cards'}
+                          </span>
                         </option>
                       ))}
                     </select>
@@ -452,48 +480,95 @@ const Templatesmain: React.FC = () => {
                 </div>
               </div>
               <div className="flex flex-wrap -mx-2 md:mt-4">
-                <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/3 xl:w-1/5 px-2 mt-4">
-                  <label
-                    className="block mb-2 text-sm font-bold text-black dark:text-white"
-                    htmlFor="templateFrameURL"
-                  >
-                    Template Frame URL
-                  </label>
-                  <div className="relative mt-[8px]">
-                    <div className="w-full sm:w-2/3 lg:w-2/5 mt-4">
-                      <input
-                        className="block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                        type="file"
-                        name="templateFrameFile"
-                        required
-                        onChange={(e) => handleFileChange(e, 'frame')}
-                      />
+                <div className="mt-4 flex">
+                  <div className="relative flex pb-5 mx-2">
+                    <div className="relative">
+                      <label htmlFor="templateFrameFile">
+                        {formData.previewFrame ? (
+                          <img
+                            src={formData.previewFrame}
+                            alt="Preview"
+                            className="accordion-btn relative h-[80px] w-[80px] cursor-pointer rounded-[18px] border-[3.5px] border-[#e3224d] p-2 text-sm text-white"
+                          />
+                        ) : (
+                          <img
+                            src={defultpdfimg}
+                            alt="Default"
+                            className="accordion-btn relative h-[76px] w-[76px] cursor-pointer rounded-[18px] border-[3.5px] border-[#e3224d] p-2 text-sm text-white"
+                          />
+                        )}
+                      </label>
+                      <label
+                        htmlFor="templateFrameFile"
+                        className="absolute -right-3 -top-3 h-[39px] w-[39px] cursor-pointer rounded-3xl border-[#e3224d] p-1 text-white"
+                      >
+                        <img
+                          src={formData.previewFrame ? edit : pluse}
+                          alt="Icon"
+                        />
+                      </label>
                     </div>
+
+                    {/* File input */}
+                    <input
+                      type="file"
+                      id="templateFrameFile"
+                      className="hidden"
+                      name="templateFrameFile"
+                      onChange={(e) => handleFileChange(e, 'frame')}
+                    />
                   </div>
-                  
-                </div>
-                <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/3  xl:w-1/5 px-2 mt-4">
-                  <label
-                    className="block mb-2 text-sm font-bold text-black dark:text-white"
-                    htmlFor="templateThumbnailURL"
-                  >
-                    Template Thumbnail URL
+                  <label className="ml-4 flex justify-center items-center text-[15px] font-bold text-black dark:text-white">
+                    Upload Template Frame Image
                   </label>
-                  <div className="relative mt-[8px]">
-                    <div className="w-full sm:w-2/3 lg:w-2/5 mt-4">
-                      <input
-                        className="block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                        type="file"
-                        required
-                        name="templateThumbnailFile"
-                        onChange={(e) => handleFileChange(e, 'thumbnail')}
-                      />
-                    </div>
-                  </div>
                 </div>
-                <div className="w-full md:w-1/3 lg:w-1/4 flex  xl:w-1/5 items-center px-2 mt-4">
-                  <div className="flex flex-wrap w-full">
-                    <div className="mb-[0.125rem] md:mt-7  mt-3 block min-h-[1.5rem]">
+
+                <div className="mt-4 flex">
+                  <div className="relative flex pb-5 ml-7">
+                    <div className="relative">
+                      <label htmlFor="templateThumbnailFile">
+                        {formData.previewThumbnail ? (
+                          <img
+                            src={formData.previewThumbnail}
+                            alt="Preview"
+                            className="accordion-btn relative h-[80px] w-[80px] cursor-pointer rounded-[18px] border-[3.5px] border-[#e3224d] p-2 text-sm text-white"
+                          />
+                        ) : (
+                          <img
+                            src={defultpdfimg}
+                            alt="Default"
+                            className="accordion-btn relative h-[76px] w-[76px] cursor-pointer rounded-[18px] border-[3.5px] border-[#e3224d] p-2 text-sm text-white"
+                          />
+                        )}
+                      </label>
+                      <label
+                        htmlFor="templateThumbnailFile"
+                        className="absolute -right-3 -top-3 h-[39px] w-[39px] cursor-pointer rounded-3xl border-[#e3224d] p-1 text-white"
+                      >
+                        <img
+                          src={formData.previewThumbnail ? edit : pluse}
+                          alt="Icon"
+                        />
+                      </label>
+                    </div>
+
+                    {/* File input */}
+                    <input
+                      type="file"
+                      id="templateThumbnailFile"
+                      className="hidden"
+                      name="templateThumbnailFile"
+                      onChange={(e) => handleFileChange(e, 'thumbnail')}
+                    />
+                  </div>
+
+                  <label className="ml-4 flex justify-center items-center text-[15px] font-bold text-black dark:text-white">
+                    Upload Thumbnail Frame Image
+                  </label>
+                </div>
+                <div className="mt-4 flex">
+                  <div className="flex flex-wrap w-full ml-7">
+                    <div className="mb-[0.125rem] md:mt-[39px]  mt-3 block min-h-[1.5rem]">
                       <input
                         className="relative float-left mt-[0.15rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid border-secondary-500 outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-checkbox before:shadow-transparent before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:left-[5px] checked:after:top-[-1px] hover:cursor-pointer hover:before:opacity-[0.04] focus:shadow-none focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-black/60 checked:focus:before:scale-100 checked:focus:before:shadow-checkbox"
                         type="checkbox"
@@ -506,7 +581,7 @@ const Templatesmain: React.FC = () => {
                         isPro
                       </label>
                     </div>
-                    <div className="mb-[0.125rem] md:mt-7 mt-3 ml-6 block min-h-[1.5rem]">
+                    <div className="mb-[0.125rem] md:mt-[39px] mt-3 ml-6 block min-h-[1.5rem]">
                       <input
                         className="relative float-left mt-[0.15rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid border-secondary-500 outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-checkbox before:shadow-transparent before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:left-[5px] checked:after:top-[-1px] hover:cursor-pointer hover:before:opacity-[0.04] focus:shadow-none focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-black/60 checked:focus:before:scale-100 checked:focus:before:shadow-checkbox"
                         type="checkbox"

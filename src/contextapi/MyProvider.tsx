@@ -4,7 +4,6 @@ import React, { createContext, useState, ReactNode, useContext } from 'react';
 interface State {
   user: { name: string; email: string } | null;
   theme: string;
-  
 }
 
 interface StikerItem {
@@ -55,6 +54,11 @@ interface DetailedCategory {
 interface Categorid {
   id: number;
   name: string;
+  imageItems: any;
+  textItems: any;
+  stickerItems: any
+  status:any
+  templateID: any
 }
 
 interface Validinput {
@@ -95,6 +99,10 @@ interface ContextType {
   shouldRefresh: Validrefesh | false;
   setShouldRefresh: React.Dispatch<React.SetStateAction<Validrefesh | false>>;
   validateFields: () => boolean;
+  templatedetilaedapidata: Categorid | null;
+  setTemplatedetilaedapidata: React.Dispatch<
+    React.SetStateAction<Categorid | null>
+  >;
 }
 
 const MyContext = createContext<ContextType | undefined>(undefined);
@@ -194,7 +202,7 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
     return true;
   };
-  
+
   const [shouldRefresh, setShouldRefresh] = useState<Validrefesh | false>(
     false
   );
@@ -206,10 +214,16 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   };
   const [isValid, setIsValid] = useState<Validinput | boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+
+  const [templatedetilaedapidata, setTemplatedetilaedapidata] =
+    useState<Categorid | null>(null);
   return (
     <MyContext.Provider
       value={{
-        state,validateFields,
+        state,
+        validateFields,
+        templatedetilaedapidata,
+        setTemplatedetilaedapidata,
         shouldRefresh,
         setShouldRefresh,
         refreshCategories,

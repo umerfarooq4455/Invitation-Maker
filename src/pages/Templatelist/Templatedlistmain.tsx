@@ -4,9 +4,11 @@ import { useMyContext } from '../../contextapi/MyProvider';
 import { TbTrash } from 'react-icons/tb';
 import EditcategoryModal from '../Dashboard/EditcategoryModal';
 import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Templatedlistmain: React.FC = () => {
-  const { instance, isDarkMode } = useMyContext();
+  const { instance, isDarkMode, setTemplatedetilaedapidata } = useMyContext();
+  const navigate = useNavigate();
   const [isModalEdit, setIsModalEdit] = useState(false);
   const [categories, setCategories] = useState<any | null>([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +43,17 @@ const Templatedlistmain: React.FC = () => {
       toast.error(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleButtonClick = async (id: number) => {
+    try {
+      const response = await instance.get(`/get/template/${id}`);
+      console.log("umer",response.data.results[0]);
+      setTemplatedetilaedapidata(response.data.results[0]);
+      navigate(`/templatedlist/Edittemplate`);
+    } catch (error) {
+      console.error('Error fetching details:', error);
     }
   };
 
@@ -185,10 +198,9 @@ const Templatedlistmain: React.FC = () => {
                     <td className="  py-5 px-4 flex justify-end items-center dark:border-strokedark ">
                       <button
                         className="hover:text-[#E11D48] mx-4"
-                        // onClick={() => {
-                        //   CategoryDeti(catItem.cat_id);
-                        //   openModalEdit();
-                        // }}
+                        onClick={() => {
+                          handleButtonClick(catItem.templateID);
+                        }}
                       >
                         <svg
                           width="25px"
@@ -237,14 +249,12 @@ const Templatedlistmain: React.FC = () => {
                           isOpen={isModalEdit}
                           onClose={closeModalEdit}
                         />
-                        {/* edit  list item button using there id */}
                         <button
                           className="hover:text-[#E11D48] "
                           onClick={() => DeleteCategory(catItem.templateID)}
                         >
                           <TbTrash className="text-[25px] text-[#000] dark:text-[#fff]" />
                         </button>
-                        {/* edit  list item button using there id */}
                       </div>
                     </td>
                   </tr>

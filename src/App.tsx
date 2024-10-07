@@ -12,7 +12,7 @@ import Templatedlistmain from './pages/Templatelist/Templatedlistmain';
 import Addfont from './pages/Addfont/Addfont';
 import Stikerlist from './pages/Stikerlist/Stikerlist';
 import Bglist from './pages/Backgoundlmagelist/Bglist';
-import { Edittemplate } from './pages/EditTemplate/Edittemplate';
+import EditTemplateMain from './pages/EditTemplate/EditTemplateMain';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -60,7 +60,7 @@ function App() {
                     />
                     <Route
                       path="templatedlist/Edittemplate"
-                      element={<Edittemplate />}
+                      element={<EditTemplateMain />}
                     />
                   </Route>
                   <Route path="/Addfont" element={<Addfont />} />

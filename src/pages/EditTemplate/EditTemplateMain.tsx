@@ -205,7 +205,7 @@ const EditTemplateMain: React.FC = () => {
 
       console.log('Response:', response.data);
       if (response.data) {
-        toast.success('Template successfully submitted!');
+        toast.success('Template successfully Edit!');
         setTimeout(() => {
           navigate('/templatedlist');
         }, 1000);

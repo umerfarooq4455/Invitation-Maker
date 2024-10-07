@@ -118,7 +118,7 @@ const Stikerlist: React.FC = () => {
       </div>
 
       <div className="bg-[#fff] mb-4 rounded-[10px] dark:bg-[#24303F] py-4 px-4">
-        <div className="max-w-full overflow-x-auto">
+        <div className="max-w-full ">
           <div className="flex justify-between items-center flex-col py-3 md:flex-row">
             <div>
               <h4 className="md:text-xl py-2 px-2 font-semibold text-black dark:text-white">
@@ -129,7 +129,7 @@ const Stikerlist: React.FC = () => {
               <div className="relative inline-block text-left">
                 <button
                   type="button"
-                  className="inline-flex w-75  justify-between border-[#E11D48] rounded-lg border-[2px] border-dashed bg-[#fff] p-2 text-sm font-medium leading-5 transition duration-150 ease-in-out dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
+                  className="inline-flex w-75 justify-between border-[#E11D48] rounded-lg border-[2px] border-dashed bg-[#fff] p-2 text-sm font-medium leading-5 transition duration-150 ease-in-out dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
                   onClick={() => setIsDropdownOpefilter(!isDropdownOpefilter)}
                   aria-haspopup="true"
                   aria-expanded={isDropdownOpefilter}
@@ -149,7 +149,7 @@ const Stikerlist: React.FC = () => {
                   </svg>
                 </button>
                 <div
-                  className={`ring-black absolute right-0 mt-2 w-75 z-9  origin-center rounded-md bg-[#fff] shadow-lg dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff] ${
+                  className={`ring-black absolute z-9 right-0 mt-2 w-75 origin-center rounded-md bg-[#fff] shadow-lg dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff] ${
                     isDropdownOpefilter ? 'visible w-100' : 'hidden'
                   }`}
                 >
@@ -171,7 +171,7 @@ const Stikerlist: React.FC = () => {
                     {categories.map((catItem: any) => (
                       <label
                         key={catItem.cat_id}
-                        className="flex cursor-pointer   items-center bg-[#fff] px-4 py-2 text-sm leading-5 dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
+                        className="flex cursor-pointer items-center bg-[#fff] px-4 py-2 text-sm leading-5 dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
                       >
                         <input
                           type="radio"
@@ -197,14 +197,14 @@ const Stikerlist: React.FC = () => {
               {error}
             </p>
           ) : (
-            <div className="flex flex-wrap min-h-35 xl:gap-13 gap-10 justify-center md:justify-start p-2 py-4 mb-3">
+            <div className="flex flex-wrap min-h-35 gap-10 justify-center md:justify-start p-2 py-4 mb-3">
               {stickerslist.map((sticker: any, index: number) => (
                 <div
                   key={index}
-                  className="relative group sm:mb-3 w-[135px] h-[100px] sm:w-[110px] sm:h-[150px] md:w-[110px] md:h-[100px] lg:w-[130px] lg:h-[100px] xl:w-[122px] md:mb-0"
+                  className="relative group sm:mb-3 w-[160px]  md:mb-0"
                 >
                   <img
-                    className="object-cover p-2 rounded-md transition-opacity duration-200 group-hover:bg-[#EAEAEA] group-hover:opacity-55"
+                    className="object-cover  rounded-md transition-opacity duration-200 group-hover:bg-[#EAEAEA] group-hover:opacity-55"
                     src={`https://collage-maker.trippleapps.com${sticker.sticker_url}`}
                     alt="Sticker"
                   />

@@ -117,8 +117,8 @@ const Bglist: React.FC = () => {
       </div>
 
       <div className="bg-[#fff] mb-4 rounded-[10px] dark:bg-[#24303F] py-4 px-4">
-        <div className="max-w-full overflow-x-auto">
-          <div className="flex justify-between items-center flex-col py-3 md:flex-row">
+        <div className="max-w-full ">
+          <div className="flex justify-between items-center flex-col py-3 md:flex-row overflow-x-auto">
             <div>
               <h4 className="md:text-xl py-2 px-2 font-semibold text-black dark:text-white">
                 Background List
@@ -148,7 +148,7 @@ const Bglist: React.FC = () => {
                   </svg>
                 </button>
                 <div
-                  className={`ring-black absolute right-0 mt-2 w-75 z-9 origin-center rounded-md bg-[#fff] shadow-lg dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff] ${
+                  className={`ring-black absolute z-9 right-0 mt-2 w-75 origin-center rounded-md bg-[#fff] shadow-lg dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff] ${
                     isDropdownOpefilter ? 'visible w-100' : 'hidden'
                   }`}
                 >

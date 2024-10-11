@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import logo from './logo.png';
 import { VscGitPullRequestCreate } from 'react-icons/vsc';
 import { FaRegFontAwesome } from 'react-icons/fa6';
-import { PiSelectionBackground } from 'react-icons/pi';
+import { IoCopyOutline } from "react-icons/io5";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -219,7 +219,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     'text-[#fff] dark:text-[#fff] bg-gradient-to-r from-[#E11D48] to-[#ff7896] dark:bg-meta-4'
                   }`}
                 >
-                  <PiSelectionBackground width={19} height={19} />
+                  <IoCopyOutline  width={19} height={19} />
                   Background List
                 </NavLink>
               </li>

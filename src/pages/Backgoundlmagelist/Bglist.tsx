@@ -18,7 +18,7 @@ const Bglist: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
-    fetchAllBackgrounds(); // Fetch all backgrounds initially
+    fetchAllBackgrounds();
   }, []);
 
   const fetchCategories = async () => {
@@ -76,7 +76,7 @@ const Bglist: React.FC = () => {
   const handleCheckboxFilter = (category: any) => {
     setSelectedfileroption(category.en);
     setIsDropdownOpefilter(false);
-    bglist(category.cat_id); // Fetch images for the selected category
+    bglist(category.cat_id);
   };
 
   const openModal = () => {
@@ -106,7 +106,7 @@ const Bglist: React.FC = () => {
     <>
       <Toaster position="top-center" reverseOrder={false} />
       <Bgaddmodal isOpen={isModalOpen} onClose={closeModal} bglist={bglist} />
-      <div className=" py-5 top-[76px] bg-[#F1F5F9] dark:bg-[#1A222C] border-none ">
+      <div className=" py-5 top-[76px] bg-[#F1F5F9] dark:bg-[#1A222C] border-none">
         <button
           className="inline-flex items-center justify-center rounded-[10px] bg-gradient-to-r from-[#E11D48] to-[#ff7896]  py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 "
           type="button"

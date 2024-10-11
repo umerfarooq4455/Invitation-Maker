@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMyContext } from '../../contextapi/MyProvider';
 import toast, { Toaster } from 'react-hot-toast';
-import { BsArrowDown } from 'react-icons/bs';
+import { FaArrowDownLong } from "react-icons/fa6";
 
 interface AddCategoryModalProps {
   isOpen: boolean;
@@ -140,7 +140,7 @@ const Uploadfilemodal: React.FC<AddCategoryModalProps> = ({
             {isLoading ? (
               <div className="flex flex-col justify-center items-center">
                 <span className="animate-bounce flex justify-center items-center p-2 w-12 h-12 shadow-md rounded-full text-blue-500">
-                  <BsArrowDown width={15} height={15} />
+                  <FaArrowDownLong  width={15} height={15} />
                 </span>
                 <span className="mt-2 text-[#000] dark:text-[#fff] text-[10px] font-bold">
                   Uploading...

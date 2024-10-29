@@ -42,6 +42,7 @@ interface TextItem {
   textSize: string;
   textAlignment: string;
   letterSpacing: string;
+  lineHeight: string;
 }
 
 interface DetailedCategory {
@@ -167,6 +168,7 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       textColor: '',
       textSize: '',
       letterSpacing: '',
+      lineHeight: '',
     },
   ]);
 

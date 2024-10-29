@@ -15,6 +15,7 @@ interface Item {
   textSize: string;
   textAlignment: string;
   letterSpacing: string;
+  lineHeight: string;
 }
 
 interface Font {
@@ -45,6 +46,7 @@ const TextItems = () => {
     fontId: 'defaultFontId',
     fontName: 'defaultFontName',
     fontUrl: 'defaultFontUrl',
+    lineHeight: '',
   };
 
   useEffect(() => {
@@ -100,6 +102,7 @@ const TextItems = () => {
       item.textColor &&
       item.textSize &&
       item.textAlignment &&
+      item.lineHeight &&
       item.fontId &&
       item.fontName &&
       item.fontUrl;
@@ -418,6 +421,26 @@ const TextItems = () => {
                             value={item.letterSpacing}
                             onChange={(e) =>
                               handleInputChange(e, index, 'letterSpacing')
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="w-full sm:w-1/3 px-2">
+                        <label
+                          className="block mb-2 text-sm font-bold text-black dark:text-white"
+                          htmlFor={`lineHeight${index}`}
+                        >
+                          Line Height
+                        </label>
+                        <div className="relative">
+                          <input
+                            className="block w-full resize-none rounded-[10px] border border-[#B8BAC7] bg-white px-3 py-2.5 text-[16px] font-normal text-[#1B254B] dark:border-meta-4 dark:bg-meta-4 dark:text-white dark:placeholder-[#fff]"
+                            type="number"
+                            id={`lineHeight${index}`}
+                            placeholder="line Height"
+                            value={item.lineHeight}
+                            onChange={(e) =>
+                              handleInputChange(e, index, 'lineHeight')
                             }
                           />
                         </div>

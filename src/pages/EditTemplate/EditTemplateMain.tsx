@@ -151,6 +151,7 @@ const EditTemplateMain: React.FC = () => {
         !item.itemBottomMargin ||
         !item.textColor ||
         !item.textSize ||
+        !item.lineHeight ||
         !item.textAlignment ||
         !item.fontId ||
         !item.fontName ||

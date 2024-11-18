@@ -10,9 +10,14 @@ const Templatedlistmain: React.FC = () => {
   const { instance, isDarkMode, setTemplatedetilaedapidata } = useMyContext();
   const navigate = useNavigate();
   const [isModalEdit, setIsModalEdit] = useState(false);
+  const [templatelist, setTemplatelist] = useState<any | null>([]);
   const [categories, setCategories] = useState<any | null>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDropdownOpefilter, setIsDropdownOpefilter] = useState(false);
+  const [selectedfileroption, setSelectedfileroption] = useState<string | null>(
+    null
+  );
 
   const closeModalEdit = () => {
     setIsModalEdit(false);
@@ -20,12 +25,15 @@ const Templatedlistmain: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
+    fetchcategororylist();
   }, []);
 
-  const fetchCategories = async () => {
+  const fetchcategororylist = async () => {
+    setLoading(true);
     try {
-      const response = await instance.get('/template/list');
-      setCategories(response.data.results);
+      const response = await instance.get('/category_list/');
+      const categoriesData = response.data.results;
+      setCategories(categoriesData);
     } catch (err) {
       setError('Failed to fetch categories');
     } finally {
@@ -33,6 +41,21 @@ const Templatedlistmain: React.FC = () => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const response = await instance.get('/template/list');
+      setTemplatelist(response.data.results);
+    } catch (err) {
+      setError('Failed to fetch categories');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCheckboxFilter = (category: any) => {
+    setSelectedfileroption(category.en);
+    setIsDropdownOpefilter(false);
+  };
   const DeleteCategory = async (id: number) => {
     try {
       const response = await instance.delete(`/template/delete/${id}`);
@@ -49,7 +72,7 @@ const Templatedlistmain: React.FC = () => {
   const handleButtonClick = async (id: number) => {
     try {
       const response = await instance.get(`/get/template/${id}`);
-      console.log("umer",response.data.results[0]);
+      console.log('umer', response.data.results[0]);
       setTemplatedetilaedapidata(response.data.results[0]);
       navigate(`/templatedlist/Edittemplate`);
     } catch (error) {
@@ -57,6 +80,13 @@ const Templatedlistmain: React.FC = () => {
     }
   };
 
+  const filteredTemplates = selectedfileroption
+    ? templatelist.filter((template: any) =>
+        template.Categories.some(
+          (category: any) => category.en === selectedfileroption
+        )
+      )
+    : templatelist;
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
@@ -80,38 +110,70 @@ const Templatedlistmain: React.FC = () => {
             </div>
 
             <div className="flex">
-              {/* <div className="mr-2">
-                <form className="max-w-md mx-auto flex">
-                  <input
-                    type="text"
-                    id="simple-search"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#E11D48] focus:border-[#ff7896] block w-full p-2.5  dark:bg-[#ff7896] dark:border-[#E11D48] dark:placeholder-gray-400 dark:text-white"
-                    placeholder="Search name..."
-                    required
-                  />
-
+              {/* filter  */}
+              <div className="hidden items-center justify-center md:flex relative">
+                <div className="relative inline-block text-left">
                   <button
-                    type="submit"
-                    className="p-2.5 ms-2 text-sm font-medium text-white bg-[#E11D48] rounded-lg border border-[#ff7896] hover:bg-[#ff7896]  "
+                    type="button"
+                    className="inline-flex w-75 justify-between border-[#E11D48] rounded-lg border-[2px] border-dashed bg-[#fff] p-2 text-sm font-medium leading-5 transition duration-150 ease-in-out dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
+                    onClick={() => setIsDropdownOpefilter(!isDropdownOpefilter)}
+                    aria-haspopup="true"
+                    aria-expanded={isDropdownOpefilter}
                   >
+                    <span className="pr-2 font-bold">Filter by category:</span>
+                    {selectedfileroption || 'All'}
                     <svg
-                      className="w-4 h-4"
-                      aria-hidden="true"
+                      className={`h-5 w-5 px-0 transition-transform duration-200 ${
+                        isDropdownOpefilter ? '-rotate-90' : '-rotate-180'
+                      }`}
                       xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
+                      viewBox="0 0 24 24"
+                      width="512"
+                      height="512"
                     >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
+                      <path d="M10.957,12.354a.5.5,0,0,1,0-.708l4.586-4.585a1.5,1.5,0,0,0-2.121-2.122L8.836,9.525a3.505,3.505,0,0,0,0,4.95l4.586,4.586a1.5,1.5,0,0,0,2.121-2.122Z" />
                     </svg>
                   </button>
-                </form>
-              </div> */}
+                  <div
+                    className={`ring-black absolute z-9 right-0 mt-2 w-75 origin-center rounded-md bg-[#fff] shadow-lg dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff] ${
+                      isDropdownOpefilter ? 'visible w-100' : 'hidden'
+                    }`}
+                  >
+                    <div className="py-1">
+                      <label
+                        className="flex cursor-pointer items-center bg-[#fff] px-4 py-2 text-sm leading-5 dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
+                        onClick={() => {
+                          setSelectedfileroption(null);
+                          fetchCategories();
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          className="form-checkbox h-5 w-5 rounded text-[#fff]"
+                          checked={!selectedfileroption} // Checked when no category is selected
+                        />
+                        <span className="ml-2">All</span>
+                      </label>
+
+                      {categories.map((catItem: any) => (
+                        <label
+                          key={catItem.cat_id}
+                          className="flex cursor-pointer items-center bg-[#fff] px-4 py-2 text-sm leading-5 dark:border-[#212430] dark:bg-[#212430] dark:text-[#fff]"
+                          onClick={() => handleCheckboxFilter(catItem)} // Update selected category
+                        >
+                          <input
+                            type="radio"
+                            className="form-checkbox h-5 w-5 rounded text-[#fff]"
+                            checked={selectedfileroption === catItem.en} // Ensure only one category is selected at a time
+                          />
+                          <span className="ml-2">{catItem.en}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* filter  */}
             </div>
           </div>
           {loading ? (
@@ -149,17 +211,17 @@ const Templatedlistmain: React.FC = () => {
               </thead>
 
               <tbody>
-                {categories.map((catItem: any) => (
+                {filteredTemplates.map((item: any, index: number) => (
                   <tr>
                     <td className=" font-semibold  py-5 px-4 dark:border-strokedark">
                       <p className="font-semibold text-[#000000] text-[16px] dark:text-white">
-                        {catItem.templateID}
+                        {item.templateID}
                       </p>
                     </td>
                     <td className="  py-5 px-4  dark:border-strokedark ">
                       <img
                         className="rounded-full font-semibold h-[50px] w-[50px] text-[#000000] text-[16px]  dark:text-white"
-                        src={`https://collage-maker.trippleapps.com${catItem.templateThumbnailURL}`}
+                        src={`https://collage-maker.trippleapps.com${item.templateThumbnailURL}`}
                       />
                     </td>
                     {/* <td className="  py-5 px-4 dark:border-strokedark">
@@ -171,7 +233,7 @@ const Templatedlistmain: React.FC = () => {
                       <p
                         className={`font-semibold flex items-center text-start  text-[16px] `}
                       >
-                        {catItem.templateBaseURL}
+                        {item.templateBaseURL}
                       </p>
                     </td>
                     <td className="text-end py-5 px-4 dark:border-strokedark">
@@ -179,18 +241,18 @@ const Templatedlistmain: React.FC = () => {
                         className={`font-semibold flex items-center text-center text-[16px]
                       `}
                       >
-                        {catItem.status}
+                        {item.status}
                       </p>
                     </td>
                     <td className="text-end py-5 px-4 dark:border-strokedark">
                       <p
                         className={`font-semibold flex items-center text-center text-[16px] ${
-                          catItem.Categories[0]?.thumbnilcategory === '0'
+                          item.Categories[0]?.thumbnilcategory === '0'
                             ? 'text-blue-500'
                             : 'text-green-500'
                         }`}
                       >
-                        {catItem.Categories[0]?.thumbnilcategory === '0'
+                        {item.Categories[0]?.thumbnilcategory === '0'
                           ? 'Invitation Templates'
                           : 'Greeting Cards'}
                       </p>
@@ -199,7 +261,7 @@ const Templatedlistmain: React.FC = () => {
                       <button
                         className="hover:text-[#E11D48] mx-4"
                         onClick={() => {
-                          handleButtonClick(catItem.templateID);
+                          handleButtonClick(item.templateID);
                         }}
                       >
                         <svg
@@ -251,7 +313,7 @@ const Templatedlistmain: React.FC = () => {
                         />
                         <button
                           className="hover:text-[#E11D48] "
-                          onClick={() => DeleteCategory(catItem.templateID)}
+                          onClick={() => DeleteCategory(item.templateID)}
                         >
                           <TbTrash className="text-[25px] text-[#000] dark:text-[#fff]" />
                         </button>

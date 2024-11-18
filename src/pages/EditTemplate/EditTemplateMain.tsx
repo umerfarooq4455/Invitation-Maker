@@ -44,12 +44,13 @@ const EditTemplateMain: React.FC = () => {
     previewThumbnail: '',
   });
 
-  // Populate formData with templatedetilaedapidata when it changes
   useEffect(() => {
     if (templatedetilaedapidata) {
       setFormData((prevData) => ({
         ...prevData,
-        ...templatedetilaedapidata, // Spread the existing state with the new data
+        ...templatedetilaedapidata,
+        isPro: templatedetilaedapidata.isPro === "1", // Convert to boolean
+        isNew: templatedetilaedapidata.isNew === "1", // Convert to boolean
       }));
     }
   }, [templatedetilaedapidata]);
@@ -546,7 +547,8 @@ const EditTemplateMain: React.FC = () => {
                   <div className="relative flex pb-5 ml-7">
                     <div className="relative">
                       <label htmlFor="templateThumbnailFile">
-                        {formData.previewThumbnail || formData.templateThumbnailURL ? (
+                        {formData.previewThumbnail ||
+                        formData.templateThumbnailURL ? (
                           <img
                             src={
                               formData.templateThumbnailURL

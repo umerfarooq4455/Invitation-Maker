@@ -57,9 +57,11 @@ interface Categorid {
   name: string;
   imageItems: any;
   textItems: any;
-  stickerItems: any
-  status:any
-  templateID: any
+  stickerItems: any;
+  status: any;
+  templateID: any;
+  isPro: any;
+  isNew: any;
 }
 
 interface Validinput {

@@ -125,6 +125,7 @@ const Stikerlist: React.FC = () => {
                 Stickers List
               </h4>
             </div>
+            {/* filter  */}
             <div className="hidden items-center justify-center md:flex relative">
               <div className="relative inline-block text-left">
                 <button
@@ -186,6 +187,7 @@ const Stikerlist: React.FC = () => {
                 </div>
               </div>
             </div>
+            {/* filter  */}
           </div>
 
           {loading ? (
